@@ -24,6 +24,8 @@ public interface IRemoteServer extends Remote{
     public ArrayList<User> getOnlineUsers() throws RemoteException;
 
     public boolean registerInServer(String username, String password) throws RemoteException;
+    
+    public User getUser(String username , String password) throws RemoteException;
 
     
 }

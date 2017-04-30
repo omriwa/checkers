@@ -11,6 +11,8 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import CheckerServer.IRemoteServer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -51,16 +53,21 @@ public class Client {
             
     }
     
-    public void onRegister(String username){//to fix
-        
+    public boolean onRegister(String username , String password){
+        try {
+            return remoteServer.registerInServer(username, password);
+        } catch (RemoteException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
     
     public boolean onLogOn(String username, String pass){
         try {
             if (remoteServer.connectToServer(username, pass)){
-                user = remoteServer.getUser();
-                user = loadConfiguration(user.getConfigurationPath());
-                //xml loading user conf set to user
+//                user = remoteServer.getUser(username , pass);
+//                user = loadConfiguration(user.getConfigurationPath());
+//                //xml loading user conf set to user
                 return true;
             } else {
                 //dialog doesn't exist

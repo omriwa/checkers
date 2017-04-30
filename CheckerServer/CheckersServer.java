@@ -27,7 +27,7 @@ public class CheckersServer {
 
     private static CheckersServer server = null;
     private final DatabaseManager databaseManager;
-    private HashMap<String, IRemoteClient> users;
+    private ArrayList<User> onlineUsers;
     private HashMap<String, GameState> games;
 
     private CheckersServer() {
@@ -51,9 +51,10 @@ public class CheckersServer {
         return server;
     }
 
-    public boolean connect(String username, String password) {
+    public boolean connect(String username , String password) {
         if (databaseManager.checkUserLogin(username, password)) {
             //add to user hash
+            //function returning user
             return true;
         }
         return false;
@@ -64,7 +65,7 @@ public class CheckersServer {
     }
 
     private void clientDisconnected(String user) {
-        users.remove(user);
+        onlineUsers.remove(user);
         if (games.containsKey(user)) {
             //games.get(user).getPlayerIngame();
 
@@ -73,7 +74,7 @@ public class CheckersServer {
     }
 
     public boolean register(String username, String password) {
-        if (databaseManager.registerUser(username, password)) {
+        if(databaseManager.registerUser(username, password)) {
             //add to hash
             return true;
         }
@@ -112,5 +113,11 @@ public class CheckersServer {
     
     private void intializeGameState(String username , IRemoteClient remoteClient){
         GameState gameState = new GameState();
+    }
+    /*return the the user details from database and creating a user*/
+    public User getUser(String username , String password){
+        User user = null;
+        //func then intailze user
+        return user;
     }
 }

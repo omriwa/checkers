@@ -24,6 +24,13 @@ public class User implements Serializable{
         
     }
     
+    public User(String username , String configPath , String saveGameDir){
+        this();
+        this.username = username;
+        this.configPath = configPath;
+        this.savedGamesDir = saveGameDir;
+    }
+    
     public String getUsername(){
         return username;
     }

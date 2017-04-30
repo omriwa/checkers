@@ -29,5 +29,10 @@ public class RemoteServer implements IRemoteServer{
     public boolean registerInServer(String username, String password) throws RemoteException {
         return CheckersServer.getServer().register(username , password);
     }
+
+    @Override
+    public User getUser(String username, String password) throws RemoteException {
+        return CheckersServer.getServer().getUser(username , password);
+    }
  
 }
