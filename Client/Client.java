@@ -45,7 +45,6 @@ public class Client {
         try {
             registry = LocateRegistry.getRegistry(host);
                  remoteServer = (IRemoteServer) registry.lookup(objName);
-        
             } catch (Exception e) {
                 System.out.println("error");//fix
             }

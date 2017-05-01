@@ -10,6 +10,7 @@ import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -81,9 +82,8 @@ public class DatabaseManager {
                     + " AND password=" + "'" + password + "'";
             ResultSet rs = state.executeQuery(query);
             if (rs.first())//there is such username with this password
-            {
                 return true;
-            }
+            
         } catch (SQLException ex) {
             Logger.getLogger(DatabaseManager.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -116,19 +116,18 @@ public class DatabaseManager {
             if (!regTable.next()) {
                 createTables();
             }
-
-            state = connection.createStatement();
-            String query = "SELECT username FROM users WHERE username="
-                    + "'" + username + "'";
-            ResultSet rs = state.executeQuery(query);
-            if (rs.first())//there is such username with this password
-            {
-                return false;
-            }
-            query = "INSERT INTO users VALUES(" + "'" + username + "'"
-                    + "," + "'" + password + "')";
-            state.execute(query);
+            if(!checkIfUserExists(username)){
+                state = connection.createStatement();
+                String query , dateStr;
+                DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                Date date = new Date();
+                dateStr = (dateFormat.format(date));
+                query = "INSERT INTO users VALUES(" + "'" + username + "'"
+                        + "," + "'" + password + "'" +  "," + "'color'" 
+                        + "," + "'config'" + "," + "'" + dateStr + "'" + ")";
+                state.execute(query);
             return true;
+            }
         } catch (SQLException ex) {
             Logger.getLogger(DatabaseManager.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -136,7 +135,7 @@ public class DatabaseManager {
     }
 
     public void createTables() {
-        String createUsersTableQuery = "CREATE TABLE REGISTRATION "
+        String createUsersTableQuery = "CREATE TABLE Users "
                 + "(username VARCHAR(255) not NULL, "
                 + " password VARCHAR(255), "
                 + " color VARCHAR(255), "
@@ -144,7 +143,7 @@ public class DatabaseManager {
                 + " lastOnline DATE, "
                 + " PRIMARY KEY ( username ))";
 
-        String createGameHistoryTableQuery = "CREATE TABLE REGISTRATION "
+        String createGameHistoryTableQuery = "CREATE TABLE GamesHistory "
                 + "(player1 VARCHAR(255) not NULL, "
                 + " player2 VARCHAR(255) not NULL, "
                 + " winner VARCHAR(255), "
@@ -153,13 +152,28 @@ public class DatabaseManager {
 
         //create the users & gameHistory table
         try {
+            state = connection.createStatement();
             state.executeUpdate(createUsersTableQuery);
+            state = connection.createStatement();
             state.executeUpdate(createGameHistoryTableQuery);
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
+    }
+    
+    private boolean checkIfUserExists(String username){
+        String query = "SELECT username FROM users WHERE username="
+                    + "'" + username + "'";
+        try{
+            state = connection.createStatement();
+            ResultSet rs = state.executeQuery(query);
+            if (!rs.first())//there is such username with this password
+                return false;
+        }
+        catch(Exception e){}
+        return true;//in a case it will not create user
     }
 
     public static void main(String[] argv) {

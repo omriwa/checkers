@@ -34,8 +34,8 @@ public class MainPanel extends JPanel implements Serializable {
         gamePanel = GamePanel.getGamePlayPanel();
 
         //setup
-        gamePanel.setVisible(true);
-        formPanel.setVisible(false);
+        gamePanel.setVisible(false);
+        formPanel.setVisible(true);
         this.add(formPanel);
         this.add(gamePanel);
         Dimension d = (this.getSize());
@@ -93,15 +93,10 @@ public class MainPanel extends JPanel implements Serializable {
                 }
 
             } else {
-                try {
-                    if (Client.Client.getClient().getremoteServer().registerInServer(username, password)) {
-                        System.out.println("user register");
-                    } else {
-                        formPanel.setHeadline("User Is Already Exists!");
-                    }
-
-                } catch (RemoteException ex) {
-                    Logger.getLogger(MainPanel.class.getName()).log(Level.SEVERE, null, ex);
+                if (Client.Client.getClient().onRegister(username, password)) {
+                    System.out.println("user register");
+                } else {
+                    formPanel.setHeadline("User Is Already Exists!");
                 }
             }
 
