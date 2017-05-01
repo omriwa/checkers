@@ -1,6 +1,7 @@
 package Database;
 
 
+import Model.User;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -104,6 +105,22 @@ public class DatabaseManager {
                 Logger.getLogger(DatabaseManager.class.getName()).log(Level.SEVERE, null, ex);
             } 
         return false;
+    }
+    
+    public User getUserFromDB(String uname,String pass){    	
+    	User res = null;
+         try {
+		state = connection.createStatement();
+		String sql = "SELECT username, configPath FROM users WHERE username = " + uname + " AND password = " + pass;
+	        ResultSet rs = state.executeQuery(sql);
+			
+	        res = new User(rs.getString("username"),rs.getString("configPath"),"game_dir");//need to fixs
+	        
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return res;
     }
     
     public static void main(String[] argv) {
