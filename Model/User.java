@@ -43,5 +43,8 @@ public class User implements Serializable{
         this.username = username;
     }
     
+    public void setBridge(IRemoteClient b){
+        bridge = b;
+    }
     
 }

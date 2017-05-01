@@ -31,11 +31,11 @@ public class MainPanel extends JPanel implements Serializable {
     private MainPanel() {
         listener = new MainPanelLis();
         formPanel = new FormPanel();
-        gamePanel = new GamePanel();
+        gamePanel = GamePanel.getGamePlayPanel();
 
         //setup
-        gamePanel.setVisible(false);
-        formPanel.setVisible(true);
+        gamePanel.setVisible(true);
+        formPanel.setVisible(false);
         this.add(formPanel);
         this.add(gamePanel);
         Dimension d = (this.getSize());

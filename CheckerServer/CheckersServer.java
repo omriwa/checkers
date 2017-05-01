@@ -51,17 +51,20 @@ public class CheckersServer {
         return server;
     }
 
-    public boolean connect(String username , String password) {
+    public boolean connect(String username , String password , IRemoteClient b) {
         if (databaseManager.checkUserLogin(username, password)) {
-            //add to user hash
-            //function returning user
+            User user = databaseManager.getUserFromDB(username, password);
+            if(onlineUsers.indexOf(user) == -1){//user isnt exists
+                user.setBridge(b);
+                onlineUsers.add(user);
+            }
             return true;
         }
         return false;
     }
 
     private void createDataBase() {
-
+        //create tables here
     }
 
     private void clientDisconnected(String user) {
@@ -73,19 +76,20 @@ public class CheckersServer {
         }
     }
 
-    public boolean register(String username, String password) {
+    public boolean register(String username, String password , IRemoteClient b) {
         if(databaseManager.registerUser(username, password)) {
             //add to hash
-            return true;
+            return connect(username, password, b);
+ 
         }
         return false;
     }
     private Thread checkUsersOnline = new Thread(new Runnable() {
         public void run() {
             try {
-                for (String user : users.keySet()) {
+                for (User user : onlineUsers) {
                     try {
-                        if (!users.get(user).isAlive()) {
+                        if (!user.isAlive()){//disconected user
                             clientDisconnected(user);
                         }
                     } catch (Exception e) {
@@ -102,7 +106,7 @@ public class CheckersServer {
     });
 
     private void initialize() {
-        users = new HashMap<>();
+        onlineUsers = new ArrayList<>();
         createDataBase();
 
     }
@@ -116,8 +120,6 @@ public class CheckersServer {
     }
     /*return the the user details from database and creating a user*/
     public User getUser(String username , String password){
-        User user = null;
-        //func then intailze user
-        return user;
+        return databaseManager.getUserFromDB(username, password);
     }
 }

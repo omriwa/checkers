@@ -16,7 +16,7 @@ public class Main {
       public static void main(String [] args){
         try{
             Client client = Client.getClient("localhost" , "gameManager");
-            GameFrame gameFrame = new GameFrame();
+            GameFrame gameFrame = GameFrame.getGameFrame();
             while(true){}
         }
         catch(Exception e){

@@ -20,18 +20,17 @@ public class GamePanel extends JPanel {
 
     private JPanel buttonsComponent, onlineUsersPanel;
     private VesselListener listener;
-    private MyButton[][] buttons;
+    private MyButton[][] board;
+    private static GamePanel gamePanel = null;
     private final int ROW = 10, COL = 10;
 
-    ;
-    
-    public GamePanel() {
+    private GamePanel() {
         buttonsComponent = new JPanel();
         buttonsComponent.setLayout(new GridLayout(10, 10));
-        buttons = new MyButton[ROW][COL];
+        board = new MyButton[ROW][COL];
         //onlineUsersPanel = (JPanel)(new OnlineUsersPanel(users));
         onlineUsersPanel = (JPanel) (new OnlineUsersPanel());
-        //listener = new VesselListener(); fix
+        listener = new VesselListener(board);
 
         //setup
         this.setLayout(new BorderLayout());
@@ -42,19 +41,26 @@ public class GamePanel extends JPanel {
         vesselSetUp(6, 10, false);//player1 set up vessels
     }
 
+    public static GamePanel getGamePlayPanel() {
+        if (gamePanel == null) {
+            gamePanel = new GamePanel();
+        }
+        return gamePanel;
+    }
+
     /*board set up as black and white squares*/
     public void buttonSetUp() {
         boolean white = true;
         int count = 1;
         for (int i = 0; i < ROW; i++) {
             for (int j = 0; j < COL; j++) {
-                buttons[i][j] = new MyButton();
-                buttons[i][j].addActionListener(listener);
-                buttonsComponent.add(buttons[i][j]);
+                board[i][j] = new MyButton();
+                board[i][j].addActionListener(listener);
+                buttonsComponent.add(board[i][j]);
                 if ((i + j) % 2 == 0) {
-                    buttons[i][j].setBackground(Color.white);
+                    board[i][j].setBackground(Color.white);
                 } else {
-                    buttons[i][j].setBackground(Color.black);
+                    board[i][j].setBackground(Color.black);
                 }
             }
 
@@ -66,9 +72,9 @@ public class GamePanel extends JPanel {
         for (int i = 0; i < ROW; i++) {
             for (int j = 0; j < COL; j++) {
                 if (board[i][j].thereIsVessel()) {//move the vessel to this.board
-                    buttons[i][j].setVessel(board[i][j].getVessel());
+                    board[i][j].setVessel(board[i][j].getVessel());
                 } else {
-                    buttons[i][j].setVessel(null);
+                    board[i][j].setVessel(null);
                 }
             }
         }
@@ -80,10 +86,14 @@ public class GamePanel extends JPanel {
         for (; startRow < endRow; startRow++) {
             for (int j = 0; j < COL; j++) {
                 if ((startRow + j) % 2 != 0) {
-                    buttons[startRow][j].setVessel(new Vessel(player1));
+                    board[startRow][j].setVessel(new Vessel(player1));
                 }
             }
         }
+    }
+    
+    public MyButton [][] getBoard(){
+        return board;
     }
 
 }

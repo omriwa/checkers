@@ -55,7 +55,7 @@ public class Client {
     
     public boolean onRegister(String username , String password){
         try {
-            return remoteServer.registerInServer(username, password);
+            return remoteServer.registerInServer(username, password , remoteClient);
         } catch (RemoteException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -64,7 +64,7 @@ public class Client {
     
     public boolean onLogOn(String username, String pass){
         try {
-            if (remoteServer.connectToServer(username, pass)){
+            if (remoteServer.connectToServer(username, pass , remoteClient)){
 //                user = remoteServer.getUser(username , pass);
 //                user = loadConfiguration(user.getConfigurationPath());
 //                //xml loading user conf set to user

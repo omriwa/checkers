@@ -6,6 +6,7 @@ package CheckerServer;
  * and open the template in the editor.
  */
 
+import Client.IRemoteClient;
 import Model.User;
 import View.GameFrame;
 import java.rmi.Remote;
@@ -19,11 +20,11 @@ import javax.swing.JFrame;
 
 public interface IRemoteServer extends Remote{
     
-    public boolean connectToServer(String username , String password) throws RemoteException;
+    public boolean connectToServer(String username , String password , IRemoteClient b) throws RemoteException;
     
     public ArrayList<User> getOnlineUsers() throws RemoteException;
 
-    public boolean registerInServer(String username, String password) throws RemoteException;
+    public boolean registerInServer(String username, String password , IRemoteClient b) throws RemoteException;
     
     public User getUser(String username , String password) throws RemoteException;
 

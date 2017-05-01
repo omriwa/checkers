@@ -1,7 +1,7 @@
 package Database;
 
-
 import Model.User;
+import com.mysql.jdbc.DatabaseMetaData;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -18,44 +18,43 @@ import java.util.logging.Logger;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author omri
  */
 public class DatabaseManager {
-    
+
     private Connection connection = null;
     private Statement state = null;
     private static int gameNum = 1;
-    private static String url = "jdbc:mysql://localhost:3306/checkers_database" , username = "root" , password = "root";
-    
-    public DatabaseManager(){
+    private static String url = "jdbc:mysql://localhost:3306/checkers_database", username = "root", password = "root";
+
+    public DatabaseManager() {
         try {
-		connection = DriverManager.getConnection(url , username, password);
+            connection = DriverManager.getConnection(url, username, password);
 
-	} catch (SQLException e) {
-		System.out.println("Connection Failed! Check output console");
-		e.printStackTrace();
-		return;
-	}
+        } catch (SQLException e) {
+            System.out.println("Connection Failed! Check output console");
+            e.printStackTrace();
+            return;
+        }
 
-	if (connection != null) {
-		System.out.println("connected to the database");
-	} else {
-		System.out.println("Failed to make connection!");
-	}
+        if (connection != null) {
+            System.out.println("connected to the database");
+        } else {
+            System.out.println("Failed to make connection!");
+        }
     }
-    
-    public void disconnectDatabase(){
+
+    public void disconnectDatabase() {
         try {
             connection.close();
         } catch (SQLException ex) {
             Logger.getLogger(DatabaseManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public void addGameInfo(){
+
+    public void addGameInfo() {
         try {
             state = connection.createStatement();
             String values = "'";
@@ -73,60 +72,100 @@ public class DatabaseManager {
         }
         System.out.println("add info seccessfuly");
     }
-    
-    public boolean checkUserLogin(String username , String password){
+
+    public boolean checkUserLogin(String username, String password) {
         try {
             state = connection.createStatement();
-            String query = "SELECT username FROM users WHERE username=" 
-                   + "'" + username + "'" 
-                   + " AND password=" + "'" + password + "'";
+            String query = "SELECT username FROM users WHERE username="
+                    + "'" + username + "'"
+                    + " AND password=" + "'" + password + "'";
             ResultSet rs = state.executeQuery(query);
-            if(rs.first())//there is such username with this password
+            if (rs.first())//there is such username with this password
+            {
                 return true;
+            }
         } catch (SQLException ex) {
             Logger.getLogger(DatabaseManager.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
     }
-    
-    public boolean registerUser(String username , String password){
-           try {
-                state = connection.createStatement();
-                String query = "SELECT username FROM users WHERE username=" 
-                       + "'" + username + "'";
-                ResultSet rs = state.executeQuery(query);
-                if(rs.first())//there is such username with this password
-                    return false;
-                query = "INSERT INTO users VALUES(" + "'" + username + "'" 
-                   + "," + "'" + password + "')";
-                state.execute(query);
-                return true;
-            } catch (SQLException ex) {
-                Logger.getLogger(DatabaseManager.class.getName()).log(Level.SEVERE, null, ex);
-            } 
+
+
+
+    public User getUserFromDB(String uname, String pass) {
+        User res = null;
+        try {
+            state = connection.createStatement();
+            String sql = "SELECT username, configPath FROM users WHERE username = " + uname + " AND password = " + pass;
+            ResultSet rs = state.executeQuery(sql);
+
+            res = new User(rs.getString("username"), rs.getString("configPath"), "game_dir");//need to fixs
+
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return res;
+    }
+
+    public boolean registerUser(String username, String password) {
+        try {
+            //if its the 1st registration, than create the "users" & "gameHistory" tables in DB
+            DatabaseMetaData dbmd = (DatabaseMetaData) connection.getMetaData();
+            ResultSet regTable = dbmd.getTables(null, null, "users", null);
+            if (!regTable.next()) {
+                createTables();
+            }
+
+            state = connection.createStatement();
+            String query = "SELECT username FROM users WHERE username="
+                    + "'" + username + "'";
+            ResultSet rs = state.executeQuery(query);
+            if (rs.first())//there is such username with this password
+            {
+                return false;
+            }
+            query = "INSERT INTO users VALUES(" + "'" + username + "'"
+                    + "," + "'" + password + "')";
+            state.execute(query);
+            return true;
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return false;
     }
-    
-    public User getUserFromDB(String uname,String pass){    	
-    	User res = null;
-         try {
-		state = connection.createStatement();
-		String sql = "SELECT username, configPath FROM users WHERE username = " + uname + " AND password = " + pass;
-	        ResultSet rs = state.executeQuery(sql);
-			
-	        res = new User(rs.getString("username"),rs.getString("configPath"),"game_dir");//need to fixs
-	        
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	return res;
+
+    public void createTables() {
+        String createUsersTableQuery = "CREATE TABLE REGISTRATION "
+                + "(username VARCHAR(255) not NULL, "
+                + " password VARCHAR(255), "
+                + " color VARCHAR(255), "
+                + " configPath VARCHAR(255), "
+                + " lastOnline DATE, "
+                + " PRIMARY KEY ( username ))";
+
+        String createGameHistoryTableQuery = "CREATE TABLE REGISTRATION "
+                + "(player1 VARCHAR(255) not NULL, "
+                + " player2 VARCHAR(255) not NULL, "
+                + " winner VARCHAR(255), "
+                + " start VARCHAR(255), "
+                + " finish VARCHAR(255))";
+
+        //create the users & gameHistory table
+        try {
+            state.executeUpdate(createUsersTableQuery);
+            state.executeUpdate(createGameHistoryTableQuery);
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
     }
-    
+
     public static void main(String[] argv) {
         DatabaseManager databaseManager = new DatabaseManager();
         databaseManager.addGameInfo();
         databaseManager.disconnectDatabase();
     }
-    
+
 }

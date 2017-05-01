@@ -16,15 +16,24 @@ import javax.swing.JPanel;
 public class GameFrame extends JFrame implements Serializable{
     
     private MainPanel mainPanel; 
+    private static GameFrame gameFrame = null;
     
-    public GameFrame() {
+    private GameFrame() {
         mainPanel = MainPanel.getMainPanel();
         
+        //setup
         this.setSize(400, 400);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.add(mainPanel);
         this.setJMenuBar(new MyMenu(this));
         this.setVisible(true);
+    }
+    
+    public static GameFrame getGameFrame(){
+        if(gameFrame == null)
+           gameFrame = new GameFrame();
+           
+        return gameFrame;
     }
   
     
