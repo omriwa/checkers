@@ -23,7 +23,7 @@ public class RemoteServer implements IRemoteServer{
 
     @Override
     public ArrayList<User> getOnlineUsers() throws RemoteException {
-        return null;//fix
+        return CheckersServer.getServer().getOnlineUsers();
     }
 
     @Override

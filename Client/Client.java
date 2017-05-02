@@ -11,6 +11,8 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import CheckerServer.IRemoteServer;
+import View.OnlineUsersPanel;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,7 +28,9 @@ public class Client {
     private IRemoteServer remoteServer;
     private static Client client = null;
     
-    private Client(){}
+    private Client(){
+        remoteClient = new RemoteClient();
+    }
     
     public static Client getClient(String host , String objName){
         if(client == null){
@@ -93,6 +97,10 @@ public class Client {
     
     public GameState getGameState(){
         return gameState;
+    }
+    /*update the lists of online user in panel*/
+    public void updateOnlineUserPanel(ArrayList<User> onlineUsers){
+        OnlineUsersPanel.getOnlineUsersPanel().setOnlineUsers(onlineUsers);
     }
   
 }

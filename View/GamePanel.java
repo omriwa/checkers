@@ -29,7 +29,7 @@ public class GamePanel extends JPanel {
         buttonsComponent.setLayout(new GridLayout(10, 10));
         board = new MyButton[ROW][COL];
         //onlineUsersPanel = (JPanel)(new OnlineUsersPanel(users));
-        onlineUsersPanel = (JPanel) (new OnlineUsersPanel());
+        onlineUsersPanel = (JPanel) (OnlineUsersPanel.getOnlineUsersPanel());
         listener = new VesselListener(board);
 
         //setup

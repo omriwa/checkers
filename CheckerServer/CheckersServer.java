@@ -13,6 +13,8 @@ import Client.IRemoteClient;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -29,13 +31,15 @@ public class CheckersServer {
     private final DatabaseManager databaseManager;
     private ArrayList<User> onlineUsers;
     private HashMap<String, GameState> games;
+    private RemoteServer remoteServer;
+    private IRemoteServer remoteServerStub;
 
     private CheckersServer() {
         databaseManager = new DatabaseManager();
         this.initialize();
         try {
             Registry registry = LocateRegistry.createRegistry(1099);
-            IRemoteServer remoteServer = (IRemoteServer) UnicastRemoteObject.exportObject(new RemoteServer(), 1099);
+            remoteServerStub = (IRemoteServer) UnicastRemoteObject.exportObject(this.remoteServer, 1099);
             registry.rebind("gameManager", remoteServer);
             System.out.println("server is up");
         } catch (Exception e) {
@@ -57,6 +61,7 @@ public class CheckersServer {
             if(onlineUsers.indexOf(user) == -1){//user isnt exists
                 user.setBridge(b);
                 onlineUsers.add(user);
+                updateUsersListInGui();
             }
             return true;
         }
@@ -106,7 +111,7 @@ public class CheckersServer {
     });
 
     private void initialize() {
-        RemoteServer manager = new RemoteServer();
+        remoteServer = new RemoteServer();
         onlineUsers = new ArrayList<>();
         createDataBase();
 
@@ -123,4 +128,18 @@ public class CheckersServer {
     public User getUser(String username , String password){
         return databaseManager.getUserFromDB(username, password);
     }
+    /*get online users*/
+    public ArrayList<User> getOnlineUsers(){
+        return onlineUsers;
+    }
+    /*update online users lists in users panel*/
+    public void updateUsersListInGui(){
+        for(User user : onlineUsers)
+            try {
+                user.getBridge().updateOnlineUsersList(onlineUsers);
+            } catch (RemoteException ex) {
+                Logger.getLogger(CheckersServer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+    }
+    
 }

@@ -5,25 +5,20 @@
  */
 package Client;
 
-import View.GameFrame;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-import javax.swing.JPanel;
 import CheckerServer.IRemoteServer;
 import Model.GameState;
+import Model.User;
+import View.OnlineUsersPanel;
+import java.util.ArrayList;
 
 /**
  *
  * @author omri
  */
 public class RemoteClient implements IRemoteClient{
-
-    private static IRemoteServer gameManager;
     
-    public RemoteClient(){
-        
-    }
+    public RemoteClient(){}
 
     @Override
     public boolean isGoodObject() throws RemoteException {
@@ -34,6 +29,10 @@ public class RemoteClient implements IRemoteClient{
     @Override
     public void sendGameState(GameState gameState) throws RemoteException {
         Client.getClient().setGameState(gameState);
+    }
+    
+    public void updateOnlineUsersList(ArrayList<User> onlineUsers){
+        Client.getClient().updateOnlineUserPanel(onlineUsers);
     }
     
 }
