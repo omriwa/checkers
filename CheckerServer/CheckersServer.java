@@ -32,7 +32,7 @@ public class CheckersServer {
 
     private CheckersServer() {
         databaseManager = new DatabaseManager();
-        RemoteServer manager = new RemoteServer();
+        this.initialize();
         try {
             Registry registry = LocateRegistry.createRegistry(1099);
             IRemoteServer remoteServer = (IRemoteServer) UnicastRemoteObject.exportObject(new RemoteServer(), 1099);
@@ -64,7 +64,7 @@ public class CheckersServer {
     }
 
     private void createDataBase() {
-        //create tables here
+        databaseManager.createTables();
     }
 
     private void clientDisconnected(String user) {
@@ -106,6 +106,7 @@ public class CheckersServer {
     });
 
     private void initialize() {
+        RemoteServer manager = new RemoteServer();
         onlineUsers = new ArrayList<>();
         createDataBase();
 

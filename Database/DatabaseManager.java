@@ -82,22 +82,23 @@ public class DatabaseManager {
                     + " AND password=" + "'" + password + "'";
             ResultSet rs = state.executeQuery(query);
             if (rs.first())//there is such username with this password
+            {
                 return true;
-            
+            }
+
         } catch (SQLException ex) {
             Logger.getLogger(DatabaseManager.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
     }
 
-
-
     public User getUserFromDB(String uname, String pass) {
         User res = null;
         try {
             state = connection.createStatement();
-            String sql = "SELECT username, configPath FROM users WHERE username = " + uname + " AND password = " + pass;
+            String sql = "SELECT username, configPath FROM users WHERE username = " + "\"" + uname + "\"" + " AND password = " + "\"" + pass + "\"";
             ResultSet rs = state.executeQuery(sql);
+            rs.next();
 
             res = new User(rs.getString("username"), rs.getString("configPath"), "game_dir");//need to fixs
 
@@ -110,23 +111,17 @@ public class DatabaseManager {
 
     public boolean registerUser(String username, String password) {
         try {
-            //if its the 1st registration, than create the "users" & "gameHistory" tables in DB
-            DatabaseMetaData dbmd = (DatabaseMetaData) connection.getMetaData();
-            ResultSet regTable = dbmd.getTables(null, null, "users", null);
-            if (!regTable.next()) {
-                createTables();
-            }
-            if(!checkIfUserExists(username)){
+            if (!checkIfUserExists(username)) {
                 state = connection.createStatement();
-                String query , dateStr;
+                String query, dateStr;
                 DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                 Date date = new Date();
                 dateStr = (dateFormat.format(date));
                 query = "INSERT INTO users VALUES(" + "'" + username + "'"
-                        + "," + "'" + password + "'" +  "," + "'color'" 
+                        + "," + "'" + password + "'" + "," + "'color'"
                         + "," + "'config'" + "," + "'" + dateStr + "'" + ")";
                 state.execute(query);
-            return true;
+                return true;
             }
         } catch (SQLException ex) {
             Logger.getLogger(DatabaseManager.class.getName()).log(Level.SEVERE, null, ex);
@@ -135,44 +130,52 @@ public class DatabaseManager {
     }
 
     public void createTables() {
-        String createUsersTableQuery = "CREATE TABLE Users "
-                + "(username VARCHAR(255) not NULL, "
-                + " password VARCHAR(255), "
-                + " color VARCHAR(255), "
-                + " configPath VARCHAR(255), "
-                + " lastOnline DATE, "
-                + " PRIMARY KEY ( username ))";
-
-        String createGameHistoryTableQuery = "CREATE TABLE GamesHistory "
-                + "(player1 VARCHAR(255) not NULL, "
-                + " player2 VARCHAR(255) not NULL, "
-                + " winner VARCHAR(255), "
-                + " start VARCHAR(255), "
-                + " finish VARCHAR(255))";
-
-        //create the users & gameHistory table
         try {
-            state = connection.createStatement();
-            state.executeUpdate(createUsersTableQuery);
-            state = connection.createStatement();
-            state.executeUpdate(createGameHistoryTableQuery);
+            //if its the 1st registration, than create the "users" & "gameHistory" tables in DB
+            DatabaseMetaData dbmd = (DatabaseMetaData) connection.getMetaData();
+            ResultSet regTable = dbmd.getTables(null, null, "users", null);
+            if (!regTable.next()) {
+
+                String createUsersTableQuery = "CREATE TABLE Users "
+                        + "(username VARCHAR(255) not NULL, "
+                        + " password VARCHAR(255), "
+                        + " color VARCHAR(255), "
+                        + " configPath VARCHAR(255), "
+                        + " lastOnline DATE, "
+                        + " PRIMARY KEY ( username ))";
+
+                String createGameHistoryTableQuery = "CREATE TABLE GamesHistory "
+                        + "(player1 VARCHAR(255) not NULL, "
+                        + " player2 VARCHAR(255) not NULL, "
+                        + " winner VARCHAR(255), "
+                        + " start VARCHAR(255), "
+                        + " finish VARCHAR(255))";
+
+                //create the users & gameHistory table
+                state = connection.createStatement();
+                state.executeUpdate(createUsersTableQuery);
+                state = connection.createStatement();
+                state.executeUpdate(createGameHistoryTableQuery);
+            }
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
     }
-    
-    private boolean checkIfUserExists(String username){
+
+    private boolean checkIfUserExists(String username) {
         String query = "SELECT username FROM users WHERE username="
-                    + "'" + username + "'";
-        try{
+                + "'" + username + "'";
+        try {
             state = connection.createStatement();
             ResultSet rs = state.executeQuery(query);
             if (!rs.first())//there is such username with this password
+            {
                 return false;
+            }
+        } catch (Exception e) {
         }
-        catch(Exception e){}
         return true;//in a case it will not create user
     }
 
