@@ -74,7 +74,7 @@ public class DatabaseManager {
         System.out.println("add info seccessfuly");
     }
 
-    public boolean checkUserLogin(String username, String password) {
+    /*public User userExist(String username, String password) {
         try {
             state = connection.createStatement();
             String query = "SELECT username FROM users WHERE username="
@@ -83,14 +83,14 @@ public class DatabaseManager {
             ResultSet rs = state.executeQuery(query);
             if (rs.first())//there is such username with this password
             {
-                return true;
+                return new User(rs.getString("username"), rs.getString("configPath"), "game_dir");
             }
 
         } catch (SQLException ex) {
             Logger.getLogger(DatabaseManager.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return false;
-    }
+        return null;
+    }*/
 
     public User getUserFromDB(String uname, String pass) {
         User res = null;

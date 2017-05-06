@@ -11,6 +11,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import CheckerServer.IRemoteServer;
+import View.MyButton;
 import View.OnlineUsersPanel;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -56,13 +57,18 @@ public class Client {
             
     }
     
-    public boolean onRegister(String username , String password){
+    public User onRegister(String username , String password){
         try {
-            return remoteServer.registerInServer(username, password , remoteClient);
+            user =  remoteServer.registerInServer(username, password , remoteClient);
+            if (user!=null) {
+                UserConfiguration.loadUserConfig(user);
+            }
+            else
+                return  null;
         } catch (RemoteException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return false;
+        return  null;
     }
     
     public boolean onLogOn(String username, String pass){
@@ -101,6 +107,27 @@ public class Client {
     /*update the lists of online user in panel*/
     public void updateOnlineUserPanel(ArrayList<User> onlineUsers){
         OnlineUsersPanel.getOnlineUsersPanel().setOnlineUsers(onlineUsers);
+    }
+    /*send the board game to the server*/
+    public void sendGameState(MyButton [][] board){
+        gameState.setState(board);
+        try {
+            remoteServer.sendGameState(gameState);
+        } catch (RemoteException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public void changeTurn(){
+        gameState.changeTurn();
+        try {
+            remoteServer.changeTurn(gameState);
+        } catch (RemoteException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void startGame() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
   
 }

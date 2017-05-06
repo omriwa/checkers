@@ -2,6 +2,7 @@ package Database;
 
 import Model.User;
 
+import java.awt.*;
 import java.io.File;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -12,11 +13,21 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import com.sun.prism.paint.Color;
+import javafx.scene.paint.*;
 import org.w3c.dom.*;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
 public class UserConfiguration {
+
+    private final static String
+            CONFIGURATION = "Configuration",
+            USER_NAME = "username",
+            ID = "id",
+            COLOR = "color",
+            SAVED_GAME_DIR = "savedGame";
+
 
     public static void saveUserConfig(User user){
         try {
@@ -27,26 +38,26 @@ public class UserConfiguration {
 
             // root elements
             Document doc = docBuilder.newDocument();
-            Element rootElement = doc.createElement("Configuration");
+            Element rootElement = doc.createElement(CONFIGURATION);
             doc.appendChild(rootElement);
 
             // staff elements
-            Element username = doc.createElement("username");
+            Element username = doc.createElement(USER_NAME);
             rootElement.appendChild(username);
 
             // set attribute to staff element
-            Attr attr = doc.createAttribute("id");
+            Attr attr = doc.createAttribute(ID);
             attr.setValue(user.getUsername());
             username.setAttributeNode(attr);
 
             // color elements
-            Element color = doc.createElement("color");
-            color.appendChild(doc.createTextNode(user.getColor()));
+            Element color = doc.createElement(COLOR);
+            color.appendChild(doc.createTextNode(user.getColor().toString()));
             rootElement.appendChild(color);
 
             // color elements
-            Element savedGame = doc.createElement("savedGame");
-            color.appendChild(doc.createTextNode(user.savedGame()));
+            Element savedGame = doc.createElement(SAVED_GAME_DIR);
+            color.appendChild(doc.createTextNode(user.getSavedGamesDir()));
             rootElement.appendChild(savedGame);
 
             //...
@@ -72,7 +83,7 @@ public class UserConfiguration {
     }
 
 
-    public static void loadUserConfig(User user){
+        public static void loadUserConfig(User user){
 
         try {
 
@@ -86,26 +97,17 @@ public class UserConfiguration {
             System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
 
 
-            NodeList nList = doc.getElementsByTagName("Configuration");
+            Node node = doc.getElementsByTagName(CONFIGURATION).item(0);
 
-            for (int temp = 0; temp < nList.getLength(); temp++) {
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
 
-                Node nNode = nList.item(temp);
+                Element eElement = (Element) node;
 
-                System.out.println("\nCurrent Element :" + nNode.getNodeName());
-
-                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-
-                    Element eElement = (Element) nNode;
-
-                    System.out.println("Staff id : " + eElement.getAttribute("id"));
-                    System.out.println("First Name : " + eElement.getElementsByTagName("firstname").item(0).getTextContent());
-                    System.out.println("Last Name : " + eElement.getElementsByTagName("lastname").item(0).getTextContent());
-                    System.out.println("Nick Name : " + eElement.getElementsByTagName("nickname").item(0).getTextContent());
-                    System.out.println("Salary : " + eElement.getElementsByTagName("salary").item(0).getTextContent());
-
-                }
+                user.setUsername(((Element) eElement.getElementsByTagName(USER_NAME).item(0)).getAttribute("id"));
+                user.setColor(java.awt.Color.getColor(eElement.getElementsByTagName(COLOR).item(0).getTextContent()));
+                user.setSavedGamesDir(eElement.getElementsByTagName(SAVED_GAME_DIR).item(0).getTextContent());
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Set;
 
 /**
  *
@@ -24,5 +25,7 @@ public interface IRemoteClient extends Remote, Serializable {
 
     public void sendGameState(GameState gameState) throws RemoteException;
     
-    public void updateOnlineUsersList(ArrayList<User> onlineUsers) throws RemoteException;
+    public void updateOnlineUsersList(Set<String> onlineUsers) throws RemoteException;
+
+    public boolean isAlive() throws RemoteException;
 }

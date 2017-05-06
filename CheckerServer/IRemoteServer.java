@@ -12,6 +12,7 @@ import View.GameFrame;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Set;
 import javax.swing.JFrame;
 /**
  *
@@ -22,11 +23,12 @@ public interface IRemoteServer extends Remote{
     
     public boolean connectToServer(String username , String password , IRemoteClient b) throws RemoteException;
     
-    public ArrayList<User> getOnlineUsers() throws RemoteException;
+    public Set<String> getOnlineUsers() throws RemoteException;
 
-    public boolean registerInServer(String username, String password , IRemoteClient b) throws RemoteException;
+    public User registerInServer(String username, String password , IRemoteClient b) throws RemoteException;
     
     public User getUser(String username , String password) throws RemoteException;
 
-    
+    public void sendGameState(GameState gameState) throws RemoteException;
+    public void changeTurn(GameState gameState) throws RemoteException;
 }

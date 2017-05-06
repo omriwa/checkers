@@ -17,7 +17,9 @@ import java.util.ArrayList;
  * @author omri
  */
 public class RemoteClient implements IRemoteClient{
-    
+
+    boolean connected = true;
+
     public RemoteClient(){}
 
     @Override
@@ -34,5 +36,13 @@ public class RemoteClient implements IRemoteClient{
     public void updateOnlineUsersList(ArrayList<User> onlineUsers){
         Client.getClient().updateOnlineUserPanel(onlineUsers);
     }
-    
+
+    public void disconnect(){
+        connected = false;
+    }
+
+    @Override
+    public boolean isAlive(){
+        return connected;
+    }
 }

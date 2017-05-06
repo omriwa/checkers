@@ -9,6 +9,7 @@ import Client.IRemoteClient;
 import Model.User;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Set;
 
 /**
  *
@@ -22,18 +23,29 @@ public class RemoteServer implements IRemoteServer{
     }
 
     @Override
-    public ArrayList<User> getOnlineUsers() throws RemoteException {
-        return CheckersServer.getServer().getOnlineUsers();
+    public Set<String> getOnlineUsers() throws RemoteException {
+        return CheckersServer.getServer().getOnlineClients().keySet();
     }
 
     @Override
-    public boolean registerInServer(String username, String password , IRemoteClient b) throws RemoteException {
+    public User registerInServer(String username, String password , IRemoteClient b) throws RemoteException {
         return CheckersServer.getServer().register(username , password , b);
     }
 
     @Override
     public User getUser(String username, String password) throws RemoteException {
         return CheckersServer.getServer().getUser(username , password);
+    }
+    @Override
+    public void sendGameState(GameState gameState){
+        try {
+            CheckersServer.getServer().updateGameState(gameState);
+        } catch (RemoteException ex) {
+            Logger.getLogger(RemoteServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public void changeTurn(GameState gameState){
+        CheckersServer.getServer().changeGameTurn(gameState);
     }
  
 }

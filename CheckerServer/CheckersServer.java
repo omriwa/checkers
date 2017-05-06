@@ -7,9 +7,8 @@ import java.util.HashMap;
 
 import Model.GameState;
 import Model.User;
-import View.GameFrame;
-import javax.swing.JFrame;
 import Client.IRemoteClient;
+import View.MyButton;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
@@ -29,7 +28,7 @@ public class CheckersServer {
 
     private static CheckersServer server = null;
     private final DatabaseManager databaseManager;
-    private ArrayList<User> onlineUsers;
+	private HashMap<String, IRemoteClient> onlineClients;
     private HashMap<String, GameState> games;
     private RemoteServer remoteServer;
     private IRemoteServer remoteServerStub;
@@ -55,17 +54,16 @@ public class CheckersServer {
         return server;
     }
 
-    public boolean connect(String username , String password , IRemoteClient b) {
-        if (databaseManager.checkUserLogin(username, password)) {
-            User user = databaseManager.getUserFromDB(username, password);
-            if(onlineUsers.indexOf(user) == -1){//user isnt exists
+    public User connect(String username , String password , IRemoteClient b) {
+        User user;
+        if ((user = databaseManager.getUserFromDB(username, password))!=null) {
+            if(!onlineClients.containsKey(user.getUsername())){//user isnt exists
                 user.setBridge(b);
-                onlineUsers.add(user);
+                onlineClients.put(user.getUsername(), b);
                 updateUsersListInGui();
             }
-            return true;
         }
-        return false;
+        return user;
     }
 
     private void createDataBase() {
@@ -73,28 +71,27 @@ public class CheckersServer {
     }
 
     private void clientDisconnected(String user) {
-        onlineUsers.remove(user);
+        onlineClients.remove(user);
         if (games.containsKey(user)) {
             //games.get(user).getPlayerIngame();
-
             //processGameEnded(otherUser)
         }
     }
 
-    public boolean register(String username, String password , IRemoteClient b) {
+    public User register(String username, String password , IRemoteClient b) {
         if(databaseManager.registerUser(username, password)) {
             //add to hash
             return connect(username, password, b);
  
         }
-        return false;
+        return null;
     }
     private Thread checkUsersOnline = new Thread(new Runnable() {
         public void run() {
             try {
                 for (User user : onlineUsers) {
                     try {
-                        if (!user.isAlive()){//disconected user
+                        if (!user.isAlive()) {//disconected user
                             clientDisconnected(user);
                         }
                     } catch (Exception e) {
@@ -120,26 +117,65 @@ public class CheckersServer {
     public DatabaseManager getDatabaseManager() {
         return databaseManager;
     }
-    
-    private void intializeGameState(String username , IRemoteClient remoteClient){
-        GameState gameState = new GameState();
+
+    private void intializeGameState(String uId1, String uId2) {
+        GameState gameState = new GameState(uId1, uId2);
+        games.put(uId1, gameState);
+        games.put(uId2, gameState);
+        //send to users
+
     }
+
     /*return the the user details from database and creating a user*/
-    public User getUser(String username , String password){
+    public User getUser(String username, String password) {
         return databaseManager.getUserFromDB(username, password);
     }
+
     /*get online users*/
-    public ArrayList<User> getOnlineUsers(){
-        return onlineUsers;
+    public HashMap<String,IRemoteClient> getOnlineClients(){
+        return onlineClients;
     }
+
     /*update online users lists in users panel*/
     public void updateUsersListInGui(){
-        for(User user : onlineUsers)
+        for(String client : onlineClients.keySet())
             try {
-                user.getBridge().updateOnlineUsersList(onlineUsers);
+                onlineClients.get(client).updateOnlineUsersList(onlineClients.keySet());
             } catch (RemoteException ex) {
                 Logger.getLogger(CheckersServer.class.getName()).log(Level.SEVERE, null, ex);
             }
     }
+
+    public void updateGameState(GameState gameState) throws RemoteException {
+        /*update data structure*/
+        games.put(gameState.getUserId1(), gameState);
+        games.put(gameState.getUserId2(), gameState);
+        sendGameState(gameState);//send game state to users
+
+    }
+
+    public void changeGameTurn(GameState gameState) {
+        gameState.changeTurn();
+        try {
+            updateGameState(gameState);
+        } catch (RemoteException ex) {
+            Logger.getLogger(CheckersServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     
+    public void StartGame(GameState gameState){
+        sendGameState(gameState);
+    }
+    /*send the game state to the users that are playing together*/
+    private void sendGameState(GameState gameState){
+        /*update the users*/
+        IRemoteClient client1 = (IRemoteClient) games.get(gameState.getUserId1());
+        IRemoteClient client2 = (IRemoteClient) games.get(gameState.getUserId2());
+        try {//upadate the users gamestate
+            client1.sendGameState(gameState);
+            client2.sendGameState(gameState);
+        } catch (RemoteException e) {
+        }
+    }
+
 }

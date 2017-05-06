@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Timer;
 import CheckerServer.IRemoteServer;
+import Model.GameState;
 import View.GamePanel;
 
 public class VesselListener implements ActionListener, Serializable {
@@ -24,12 +25,11 @@ public class VesselListener implements ActionListener, Serializable {
     private Judge judge;
     private Timer playTime = new Timer(3000, this);
     private boolean playerFinishMov = false;
-    private CheckerServer.IRemoteServer remoteServer;
+    private GameState gamestate = null;
 
-    public VesselListener(MyButton [][] b) {
+    public VesselListener(MyButton[][] b) {
         board = b;
         posList = new ArrayList<Position>();
-//        remoteServer = Client.Client.getClient().getremoteServer();
     }
 
     public void setJudge(Judge j) {
@@ -37,6 +37,7 @@ public class VesselListener implements ActionListener, Serializable {
     }
 
     public void actionPerformed(ActionEvent e) {
+        gamestate = Client.Client.getClient().getGameState();
         if (playTime.equals(e.getSource())) {//timer is finished
             playerFinishMov = true;
             playTime.stop();//stop the timer
@@ -44,12 +45,12 @@ public class VesselListener implements ActionListener, Serializable {
             try {
 
                 Vessel vessel = ((MyButton) e.getSource()).getVessel();
-                if (Client.Client.getClient().getGameState().isPlayer1Turn() && judge.isPlayer1()) {//first player turn
+                if (gamestate.isPlayer1Turn() && judge.isPlayer1()) {//first player turn
                     if (vessel == null || vessel.isPlayer1Vessel()) {
                         this.determineMove(e);
                     }
                 }
-                if (!Client.Client.getClient().getGameState().isPlayer1Turn() && !judge.isPlayer1()) {//second player turn
+                if (!gamestate.isPlayer1Turn() && !judge.isPlayer1()) {//second player turn
                     if (vessel == null || !vessel.isPlayer1Vessel()) {
                         this.determineMove(e);
                     }
@@ -60,18 +61,15 @@ public class VesselListener implements ActionListener, Serializable {
         }
 
         if (playerFinishMov) {//player finished his moves
-            try {
-                posList.clear();
-                System.out.println("player one turn " + judge.isPlayer1());
-                remoteServer.changeTurn(board);//change the turn of players
-                playerWonHandler(judge.isGameEnd());//check if the game is finished
-            } catch (RemoteException ex) {
-                Logger.getLogger(VesselListener.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            posList.clear();
+            System.out.println("player one turn " + judge.isPlayer1());
+            Client.Client.getClient().changeTurn();//change the turn of players
+            Client.Client.getClient().sendGameState(board);//send the board to the server
+            playerWonHandler(judge.isGameEnd());//check if the game is finished
+
             playerFinishMov = false;
         }
-
-    }//end of actionPerformed
+    }
 
     private void determineMove(ActionEvent e) {
         //scanning the checkers board to determine which position to handle	
@@ -172,18 +170,9 @@ public class VesselListener implements ActionListener, Serializable {
     /*receive event of the player that won and show message to user*/
     public void playerWonHandler(PlayerWonEvent e) {
         if (e != null) {
-            try {
-                remoteServer.startGame();
-            } catch (RemoteException ex) {
-                Logger.getLogger(VesselListener.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            Client.Client.getClient().startGame();
         }
 
     }
-
-    public void setManager(IRemoteServer m) {
-        remoteServer = m;
-    }
-
-}//end of class listener
+}
 
