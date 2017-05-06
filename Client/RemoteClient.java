@@ -11,6 +11,7 @@ import Model.GameState;
 import Model.User;
 import View.OnlineUsersPanel;
 import java.util.ArrayList;
+import java.util.Set;
 
 /**
  *
@@ -44,5 +45,10 @@ public class RemoteClient implements IRemoteClient{
     @Override
     public boolean isAlive(){
         return connected;
+    }
+
+    @Override
+    public void updateOnlineUsersList(Set<String> onlineUsers) throws RemoteException {
+        
     }
 }

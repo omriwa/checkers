@@ -11,6 +11,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import CheckerServer.IRemoteServer;
+import Database.UserConfiguration;
 import View.MyButton;
 import View.OnlineUsersPanel;
 import java.util.ArrayList;
@@ -73,7 +74,8 @@ public class Client {
     
     public boolean onLogOn(String username, String pass){
         try {
-            if (remoteServer.connectToServer(username, pass , remoteClient)){
+            User user = remoteServer.connectToServer(username, pass , remoteClient);
+            if (user != null){
 //                user = remoteServer.getUser(username , pass);
 //                user = loadConfiguration(user.getConfigurationPath());
 //                //xml loading user conf set to user
