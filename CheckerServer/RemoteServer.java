@@ -6,6 +6,7 @@
 package CheckerServer;
 
 import Client.IRemoteClient;
+import Model.GameState;
 import Model.User;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import java.util.Set;
  */
 public class RemoteServer implements IRemoteServer{
     @Override
-    public boolean connectToServer(String username , String password , IRemoteClient b) throws RemoteException {  
+    public User connectToServer(String username , String password , IRemoteClient b) throws RemoteException {  
         return CheckersServer.getServer().connect(username , password , b);
        
     }
@@ -41,7 +42,7 @@ public class RemoteServer implements IRemoteServer{
         try {
             CheckersServer.getServer().updateGameState(gameState);
         } catch (RemoteException ex) {
-            Logger.getLogger(RemoteServer.class.getName()).log(Level.SEVERE, null, ex);
+//            Logger.getLogger(RemoteServer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     public void changeTurn(GameState gameState){

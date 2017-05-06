@@ -86,32 +86,52 @@ public class CheckersServer {
         }
         return null;
     }
-    private Thread checkUsersOnline = new Thread(new Runnable() {
-        public void run() {
-            try {
-                for (User user : onlineUsers) {
-                    try {
-                        if (!user.isAlive()) {//disconected user
-                            clientDisconnected(user);
-                        }
-                    } catch (Exception e) {
-                        clientDisconnected(user);
-                    }
-                }
-            } finally {
-                try {
-                    Thread.sleep(100);
-                } catch (Exception e) {
-                }
-            }
-        }
-    });
+//    private Thread checkUsersOnline = new Thread(new Runnable() {
+//        public void run() {
+//            try {
+//                for (User user : onlineUsers) {
+//                    try {
+//                        if (!user.isAlive()) {//disconected user
+//                            clientDisconnected(user);
+//                        }
+//                    } catch (Exception e) {
+//                        clientDisconnected(user);
+//                    }
+//                }
+//            } finally {
+//                try {
+//                    Thread.sleep(100);
+//                } catch (Exception e) {
+//                }
+//            }
+//        }
+//    });
 
     private void initialize() {
         remoteServer = new RemoteServer();
-        onlineUsers = new ArrayList<>();
+        onlineClients = new HashMap<String,IRemoteClient>();
         createDataBase();
-
+        Thread checkUsersOnline = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    for (String id : onlineClients.keySet()) {
+                        try {
+                            if (!onlineClients.get(id).isAlive()){//disconected user
+                                clientDisconnected(id);
+                            }
+                        } catch (Exception e) {
+                            clientDisconnected(id);
+                        }
+                    }
+                } finally {
+                    try {
+                        Thread.sleep(100);
+                    } catch (Exception e) {
+                    }
+                }
+            }
+        });
+        checkUsersOnline.start();
     }
 
     public DatabaseManager getDatabaseManager() {

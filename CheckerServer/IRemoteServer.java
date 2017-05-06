@@ -7,6 +7,7 @@ package CheckerServer;
  */
 
 import Client.IRemoteClient;
+import Model.GameState;
 import Model.User;
 import View.GameFrame;
 import java.rmi.Remote;
@@ -21,7 +22,7 @@ import javax.swing.JFrame;
 
 public interface IRemoteServer extends Remote{
     
-    public boolean connectToServer(String username , String password , IRemoteClient b) throws RemoteException;
+    public User connectToServer(String username , String password , IRemoteClient b) throws RemoteException;
     
     public Set<String> getOnlineUsers() throws RemoteException;
 
