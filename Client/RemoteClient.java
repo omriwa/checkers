@@ -10,6 +10,7 @@ import CheckerServer.IRemoteServer;
 import Model.GameState;
 import Model.User;
 import View.OnlineUsersPanel;
+import java.rmi.server.RemoteObject;
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -20,10 +21,9 @@ import java.util.Set;
 public class RemoteClient implements IRemoteClient{
 
     boolean connected = true;
-    Client client = null;
-
-    public RemoteClient(Client c){
-        client = c;
+    
+    public RemoteClient(){
+        
     }
 
     @Override
@@ -34,11 +34,11 @@ public class RemoteClient implements IRemoteClient{
 
     @Override
     public void sendGameState(GameState gameState) throws RemoteException {
-        client.setGameState(gameState);
+        Client.getClient().setGameState(gameState);
     }
     
     public void updateOnlineUsersList(ArrayList<User> onlineUsers){
-        client.updateOnlineUserPanel(onlineUsers);
+        Client.getClient().updateOnlineUserPanel(onlineUsers);
     }
 
     public void disconnect(){

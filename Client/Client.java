@@ -15,6 +15,7 @@ import Database.UserConfiguration;
 import View.MyButton;
 import View.OnlineUsersPanel;
 import java.io.Serializable;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,13 +27,13 @@ import java.util.logging.Logger;
 
 public class Client implements Serializable{
     private User user;
-    private RemoteClient remoteClient;
+    private IRemoteClient remoteClient;
     private GameState gameState;
     private IRemoteServer remoteServer;
     private static Client client = null;
     
     private Client(){
-        remoteClient = new RemoteClient(this);
+        remoteClient = new RemoteClient();
     }
     
     public static Client getClient(String host , String objName){
@@ -51,12 +52,13 @@ public class Client implements Serializable{
         Registry registry;
         try {
                 registry = LocateRegistry.getRegistry(host);
-                 remoteServer = (IRemoteServer) registry.lookup(objName);
+                remoteServer = (IRemoteServer) registry.lookup(objName);
+                remoteClient = (IRemoteClient) UnicastRemoteObject.exportObject(new RemoteClient(), 0);
             } catch (Exception e) {
                 System.out.println("error");//fix
             }
         
-            
+        System.out.println("Client intialzed");  
     }
     
     public User onRegister(String username , String password){
@@ -94,7 +96,9 @@ public class Client implements Serializable{
                 // RemoteClient callback = new
                 // send the user and the callback to the server
                 }
-        catch (RemoteException ex) {}
+        catch (RemoteException ex) {
+            ex.printStackTrace();
+        }
         return false;
     }
     
