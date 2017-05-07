@@ -14,6 +14,7 @@ import CheckerServer.IRemoteServer;
 import Database.UserConfiguration;
 import View.MyButton;
 import View.OnlineUsersPanel;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,7 +24,7 @@ import java.util.logging.Logger;
  * @author omri
  */
 
-public class Client {
+public class Client implements Serializable{
     private User user;
     private RemoteClient remoteClient;
     private GameState gameState;
@@ -31,7 +32,7 @@ public class Client {
     private static Client client = null;
     
     private Client(){
-        remoteClient = new RemoteClient();
+        remoteClient = new RemoteClient(this);
     }
     
     public static Client getClient(String host , String objName){
@@ -49,7 +50,7 @@ public class Client {
     private void intialize(String host , String objName){
         Registry registry;
         try {
-            registry = LocateRegistry.getRegistry(host);
+                registry = LocateRegistry.getRegistry(host);
                  remoteServer = (IRemoteServer) registry.lookup(objName);
             } catch (Exception e) {
                 System.out.println("error");//fix
@@ -79,6 +80,8 @@ public class Client {
 //                user = remoteServer.getUser(username , pass);
 //                user = loadConfiguration(user.getConfigurationPath());
 //                //xml loading user conf set to user
+                if(gameState != null)
+                    System.out.println("game state");
                 return true;
             } else {
                 //dialog doesn't exist

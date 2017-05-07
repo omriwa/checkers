@@ -20,8 +20,11 @@ import java.util.Set;
 public class RemoteClient implements IRemoteClient{
 
     boolean connected = true;
+    Client client = null;
 
-    public RemoteClient(){}
+    public RemoteClient(Client c){
+        client = c;
+    }
 
     @Override
     public boolean isGoodObject() throws RemoteException {
@@ -31,11 +34,11 @@ public class RemoteClient implements IRemoteClient{
 
     @Override
     public void sendGameState(GameState gameState) throws RemoteException {
-        Client.getClient().setGameState(gameState);
+        client.setGameState(gameState);
     }
     
     public void updateOnlineUsersList(ArrayList<User> onlineUsers){
-        Client.getClient().updateOnlineUserPanel(onlineUsers);
+        client.updateOnlineUserPanel(onlineUsers);
     }
 
     public void disconnect(){

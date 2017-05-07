@@ -93,7 +93,7 @@ public class MainPanel extends JPanel implements Serializable {
                 }
 
             } else {
-                if (Client.Client.getClient().onRegister(username, password)) {
+                if (Client.Client.getClient().onRegister(username, password) != null) {
                     System.out.println("user register");
                 } else {
                     formPanel.setHeadline("User Is Already Exists!");

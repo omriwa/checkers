@@ -5,11 +5,13 @@
  */
 package Model;
 
+import java.io.Serializable;
+
 /**
  *
  * @author omri
  */
-public class GameState {
+public class GameState implements Serializable{
     
     private View.MyButton [][] gameVessels = null;
     private boolean player1Turn = true;

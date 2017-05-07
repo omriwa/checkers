@@ -10,6 +10,7 @@ import Client.IRemoteClient;
 import Model.GameState;
 import Model.User;
 import View.GameFrame;
+import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import javax.swing.JFrame;
  * @author omri
  */
 
-public interface IRemoteServer extends Remote{
+public interface IRemoteServer extends Remote , Serializable{
     
     public User connectToServer(String username , String password , IRemoteClient b) throws RemoteException;
     

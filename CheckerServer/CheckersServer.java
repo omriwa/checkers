@@ -28,7 +28,7 @@ public class CheckersServer {
 
     private static CheckersServer server = null;
     private final DatabaseManager databaseManager;
-	private HashMap<String, IRemoteClient> onlineClients;
+    private HashMap<String, IRemoteClient> onlineClients;
     private HashMap<String, GameState> games;
     private RemoteServer remoteServer;
     private IRemoteServer remoteServerStub;
@@ -61,6 +61,7 @@ public class CheckersServer {
                 user.setBridge(b);
                 onlineClients.put(user.getUsername(), b);
                 updateUsersListInGui();
+                StartGame(new GameState(username, username));
             }
         }
         return user;
@@ -189,8 +190,8 @@ public class CheckersServer {
     /*send the game state to the users that are playing together*/
     private void sendGameState(GameState gameState){
         /*update the users*/
-        IRemoteClient client1 = (IRemoteClient) games.get(gameState.getUserId1());
-        IRemoteClient client2 = (IRemoteClient) games.get(gameState.getUserId2());
+        IRemoteClient client1 = (IRemoteClient) onlineClients.get(gameState.getUserId1());
+        IRemoteClient client2 = (IRemoteClient) onlineClients.get(gameState.getUserId2());
         try {//upadate the users gamestate
             client1.sendGameState(gameState);
             client2.sendGameState(gameState);
