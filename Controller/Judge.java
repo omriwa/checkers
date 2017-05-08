@@ -5,32 +5,22 @@ package Controller;
 import Model.PlayerWonEvent;
 import Model.P1WonEvent;
 import Model.P2WonEvent;
-import View.CheckersGraphics;
 import View.MyButton;
 import java.awt.Component;
-import java.awt.Panel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentListener;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.EventListener;
-
-import javax.swing.JPanel;
-import javax.swing.Timer;
 
 public class Judge extends Component implements Serializable{
-	private CheckersGraphics boardGame;
+	private MyButton [][] boardGame;
 	private boolean player1Turn;
 	private int p1NumVessel = 0, p2NumVessel = 0;
         
 	
-	public Judge(CheckersGraphics board , boolean p1){
+	public Judge(MyButton [][] board , boolean p1){
 		boardGame = board;
                 player1Turn = p1;
-		MyButton [][] buttons = boardGame.getButtons();
-		for(int i=0 ; i<boardGame.getRow();i++)//count the number of vessels for each player
-			for(int j=0;j<boardGame.getCol();j++){
+		MyButton [][] buttons = boardGame;
+		for(int i=0 ; i<boardGame.length;i++)//count the number of vessels for each player
+			for(int j=0;j<boardGame.length;j++){
 				if(buttons[i][j] != null && buttons[i][j].thereIsVessel()){//there are vessels 
 					 if(buttons[i][j].getVessel().isPlayer1Vessel())//vessel of p1
 						 p1NumVessel++;
@@ -50,7 +40,7 @@ public class Judge extends Component implements Serializable{
 	}
         /*return the board of buttons*/
         public MyButton[][] getBoard(){
-            return boardGame.getButtons();
+            return boardGame;
         }
 	
 	/*check if game end and send event to listener about who win*/

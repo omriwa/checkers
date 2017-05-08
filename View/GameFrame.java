@@ -5,6 +5,7 @@
  */
 package View;
 
+import Controller.Judge;
 import java.io.Serializable;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -17,6 +18,7 @@ public class GameFrame extends JFrame implements Serializable{
     
     private MainPanel mainPanel; 
     private static GameFrame gameFrame = null;
+    private Judge judge;
     
     private GameFrame() {
         mainPanel = MainPanel.getMainPanel();
@@ -34,6 +36,10 @@ public class GameFrame extends JFrame implements Serializable{
            gameFrame = new GameFrame();
            
         return gameFrame;
+    }
+    
+    public MainPanel getMainPanel(){
+        return mainPanel;
     }
   
     

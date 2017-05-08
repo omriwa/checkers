@@ -103,4 +103,8 @@ public class MainPanel extends JPanel implements Serializable {
         }
 
     }
+    
+    public GamePanel getGamePanel(){
+        return gamePanel;
+    }
 }

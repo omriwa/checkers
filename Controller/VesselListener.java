@@ -7,14 +7,10 @@ import View.MyButton;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.Timer;
-import CheckerServer.IRemoteServer;
 import Model.GameState;
-import View.GamePanel;
+import View.GameFrame;
 
 public class VesselListener implements ActionListener, Serializable {
 
@@ -29,11 +25,9 @@ public class VesselListener implements ActionListener, Serializable {
 
     public VesselListener(MyButton[][] b) {
         board = b;
-        posList = new ArrayList<Position>();
-    }
-
-    public void setJudge(Judge j) {
-        judge = j;
+        judge = new Judge(board, true);
+        gamestate = Client.Client.getClient().getGameState();
+        posList = new ArrayList<>();
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -72,51 +66,28 @@ public class VesselListener implements ActionListener, Serializable {
     }
 
     private void determineMove(ActionEvent e) {
-        //scanning the checkers board to determine which position to handle	
-
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
-                //adding positions to the positoonList
                 if (e.getSource() == board[i][j]) {	 //saving pointer to the pressed button position 
                     curr = new Position(i, j);
-
-                    if ((posList.isEmpty() && board[i][j].thereIsVessel())
-                            || // if the user hit a vessel
-                            (!(posList.isEmpty()) && !(board[i][j].thereIsVessel())))//hit free spot
-                    {
-                        posList.add(curr);
-                        System.out.println("cur add " + curr.toString());
-                    }
-
+                    this.addToPosList(curr);
                     if (posList.size() == 2)//if there is 2 positions in posList
                     {
                         from = posList.get(0);
                         to = posList.get(1);
                         Position pos = posList.get(0);//first place
                         Vessel vessel = board[pos.getI()][pos.getJ()].getVessel();
-
-                        System.out.println(from + " -> " + to);
                         boolean isQueen = false;
                         if (!playTime.isRunning() && vessel.isQueen()) {//first time queen is eating
                             isQueen = true;
                         }
                         //determining which action to do according to the distance value
+                        if(eatAndMove(isQueen, vessel))
+                            System.out.println("eat and move");
+                        else if(simpleMove(vessel))
+                            System.out.println("just move");
 
-                        if (from.legalEatMove(to, board, isQueen, vessel.isPlayer1Vessel())) {
-                            System.out.println(" eat & move");
-                            eat(from.speEatMove(from, to, board, vessel.isPlayer1Vessel()));//and move
-                            // "to" will become "from" if there is another eat move - for multiple eating
-                            posList.remove(from);
-                            playTime.restart();
-                        } else if (!playTime.isRunning() && from.isLegalMove(curr, judge.isPlayer1(), vessel.isQueen(), board))//player just move without eating
-                        {
-                            System.out.println(" move");
-                            move(from, to);
-                            posList.clear();
-                            playerFinishMov = true;
-
-                        } else {//dist = other illegal distance 
-                            System.out.println("illegal move");
+                        else {//illegal move
                             posList.clear();//clearing the list for the next 2 positions
                         }
                         deserveQueen(to);
@@ -124,7 +95,40 @@ public class VesselListener implements ActionListener, Serializable {
                     }
                 }
             }
-        }//end of for loop
+        }
+    }
+
+    private boolean simpleMove(Vessel vessel) {
+        if (!playTime.isRunning() && from.isLegalMove(curr, judge.isPlayer1(), vessel.isQueen(), board))//player just move without eating
+        {//move
+            move(from, to);
+            posList.clear();
+            playerFinishMov = true;
+            return true;
+        }
+        return false;
+    }
+
+    private boolean eatAndMove(boolean isQueen, Vessel vessel) {
+        if (from.legalEatMove(to, board, isQueen, vessel.isPlayer1Vessel())) {//eat & move
+            eat(from.speEatMove(from, to, board, vessel.isPlayer1Vessel()));//and move
+            // "to" will become "from" if there is another eat move - for multiple eating
+            posList.remove(from);
+            playTime.restart();
+            return true;
+        }
+        return false;
+    }
+
+    /*add position to pos list*/
+    private void addToPosList(Position p) {
+        if ((posList.isEmpty() && board[p.getI()][p.getJ()].thereIsVessel())
+                || // if the user hit a vessel
+                (!(posList.isEmpty()) && !(board[p.getI()][p.getJ()].thereIsVessel())))//hit free spot
+        {
+            posList.add(p);
+            System.out.println("cur add " + p.toString());
+        }
     }
 
     //move the vessel from one position to another
@@ -175,4 +179,3 @@ public class VesselListener implements ActionListener, Serializable {
 
     }
 }
-
