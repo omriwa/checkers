@@ -5,13 +5,9 @@
  */
 package View;
 
-import Model.User;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
-import java.rmi.RemoteException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 
 import java.awt.BorderLayout;
