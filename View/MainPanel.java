@@ -54,6 +54,7 @@ public class MainPanel extends JPanel implements Serializable {
         ouPanel.setVisible(false);
         cardLayout.show(centerPanel, "formPanel");
         formPanel.getFormBtn().addActionListener(listener);
+        ouPanel.setPreferredSize(new Dimension(100 , 400));
 
     }
 

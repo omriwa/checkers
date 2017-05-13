@@ -61,8 +61,8 @@ public class CheckersServer {
             if(!onlineClients.containsKey(user.getUsername())){//user isnt exists
                 user.setBridge(b);
                 onlineClients.put(user.getUsername(), b);
-                updateUsersListInGui();
                 StartGame(new GameState(username, username));
+                updateUsersListInGui();    
             }
         }
         return user;
@@ -93,7 +93,7 @@ public class CheckersServer {
             try {
                 for (String client : onlineClients.keySet()) {
                     try {
-                        if (!Client.isAlive()) {//disconected user
+                        if (onlineClients.get(client).isAlive()) {//disconected user
                             clientDisconnected(client);
                         }
                     } catch (Exception e) {
@@ -133,7 +133,7 @@ public class CheckersServer {
                 }
             }
         });
-        checkUsersOnline.start();
+//        checkUsersOnline.start();
     }
 
     public DatabaseManager getDatabaseManager() {
@@ -162,7 +162,9 @@ public class CheckersServer {
     public void updateUsersListInGui(){
         for(String client : onlineClients.keySet())
             try {
-                onlineClients.get(client).updateOnlineUsersList(onlineClients.keySet());
+                ArrayList<String> x = new ArrayList<>();
+                x.add("aaa");
+                onlineClients.get(client).updateOnlineUsersList(x);
             } catch (RemoteException ex) {
                 Logger.getLogger(CheckersServer.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -198,6 +200,15 @@ public class CheckersServer {
             client2.sendGameState(gameState);
         } catch (RemoteException e) {
         }
+    }
+    /*return array list of string ,of the usersname*/
+    private ArrayList<String> getUsersName(String curUser){
+        ArrayList<String> uName = new ArrayList<>();
+        for(String name : onlineClients.keySet()){
+            uName.add(name);
+        }
+        uName.remove(curUser);
+        return uName;
     }
 
 }

@@ -7,11 +7,7 @@ package View;
 
 import Model.User;
 import java.awt.BorderLayout;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -24,20 +20,19 @@ import javax.swing.JScrollPane;
  */
 public class OnlineUsersPanel extends JPanel {
 
-    private ArrayList<JButton> onlineUserBtn;
     private static OnlineUsersPanel onlineUsersPanel = null;
     private JList onlineUsersList = null;
-    //instead of using this array, extract the names in the arrayList of online users
-    private String[] onlineUserNames;
-    
+    private ArrayList<String> usersName = null;
+    private JScrollPane listScroller = null;
+
     OnlineUsersPanel() {
-        onlineUserBtn = new ArrayList<>();
-        this.setSize(50,400);
+        this.setSize(50, 400);
         this.setLayout(new BorderLayout());
-        onlineUsersList = new JList(onlineUserNames);
-        JScrollPane listScroller = new JScrollPane(onlineUsersList);
-        this.add(new JLabel("Online Users"),BorderLayout.NORTH);
-        this.add(listScroller,BorderLayout.CENTER);      
+        usersName = new ArrayList<>();
+        onlineUsersList = new JList(usersName.toArray());
+        listScroller = new JScrollPane(onlineUsersList);
+        this.add(new JLabel("Online Users"), BorderLayout.NORTH);
+        this.add(listScroller, BorderLayout.CENTER);
     }
 
     public static OnlineUsersPanel getOnlineUsersPanel() {
@@ -48,27 +43,26 @@ public class OnlineUsersPanel extends JPanel {
     }
 
     /*get the online users from the server*/
-    public void setOnlineUsers(ArrayList<User> onlineUsers) {
-        onlineUserBtn.clear();
+    public void setOnlineUsers(ArrayList<String> onlineUsers) {
+        usersName.clear();
         if (onlineUsers != null) {
-            for (User user : onlineUsers) {
-                OnlineUsersPanel.getOnlineUsersPanel().getOnlineUsersBtn()
-                        .add(new JButton(user.getUsername()));
+            for (String uName : onlineUsers) {
+                usersName.add(uName);
             }
         }
 
-        OnlineUsersPanel.getOnlineUsersPanel().repaint();
+        //fix that the new users will appear, use usersName
     }
 
     public void removeUser(User user) {
-        onlineUserBtn.remove(user);
+        usersName.remove(user.getUsername());
         this.invalidate();
         this.validate();
         this.repaint();
     }
 
-    public ArrayList<JButton> getOnlineUsersBtn() {
-        return onlineUserBtn;
+    public ArrayList<String> getOnlineUsersBtn() {
+        return usersName;
     }
 
     public static void main(String[] args) {

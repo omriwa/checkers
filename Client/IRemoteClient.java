@@ -6,12 +6,10 @@ package Client;
  * and open the template in the editor.
  */
 import Model.GameState;
-import Model.User;
 import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Set;
 
 /**
  *
@@ -21,11 +19,11 @@ import java.util.Set;
 // Callback remote object for invoke methods from server
 public interface IRemoteClient extends Remote, Serializable {
 
-    public boolean isGoodObject() throws RemoteException;
-
     public void sendGameState(GameState gameState) throws RemoteException;
     
-    public void updateOnlineUsersList(Set<String> onlineUsers) throws RemoteException;
+    public void updateOnlineUsersList(ArrayList<String> onlineUsers) throws RemoteException;
 
     public boolean isAlive() throws RemoteException;
+    
+    public void disconnect() throws RemoteException;
 }

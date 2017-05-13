@@ -32,7 +32,6 @@ public class Client implements Serializable{
     private GameState gameState;
     private IRemoteServer remoteServer;
     private static Client client = null;
-    private boolean alive = false;
     
     private Client(){
         remoteClient = new RemoteClient();
@@ -48,10 +47,6 @@ public class Client implements Serializable{
     
     public static Client getClient(){
         return client;
-    }
-    
-    public static boolean isAlive() {
-        return client.alive;
     }
     
     private void intialize(String host , String objName){
@@ -120,7 +115,7 @@ public class Client implements Serializable{
         return gameState;
     }
     /*update the lists of online user in panel*/
-    public void updateOnlineUserPanel(ArrayList<User> onlineUsers){
+    public void updateOnlineUserPanel(ArrayList<String> onlineUsers){
         OnlineUsersPanel.getOnlineUsersPanel().setOnlineUsers(onlineUsers);
     }
     /*send the board game to the server*/
