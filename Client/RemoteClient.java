@@ -7,7 +7,6 @@ package Client;
 
 import java.rmi.RemoteException;
 import Model.GameState;
-import Model.User;
 import java.util.ArrayList;
 
 /**

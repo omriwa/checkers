@@ -74,9 +74,9 @@ public class CheckersServer {
 
     private void clientDisconnected(String user) {
         onlineClients.remove(user);
+        onlineClients.get(user).
         if (games.containsKey(user)) {
-            //games.get(user).getPlayerIngame();
-            //processGameEnded(otherUser)
+            
         }
     }
 
