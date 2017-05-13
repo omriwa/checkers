@@ -15,11 +15,18 @@ public class GameState implements Serializable{
     
     private View.MyButton [][] gameVessels = null;
     private boolean player1Turn = true;
-    private String userID1 , UserID2;
+    private String userID1 , userID2;
     
     public GameState(String u1 , String u2){
         userID1 = u1;
-        UserID2 = u2;
+        userID2 = u2;
+    }
+
+    public String getOtherUser(String user){
+        if (user == userID1)
+            return userID2;
+        else
+            return userID1;
     }
     
     public View.MyButton[][] getState(){
@@ -41,7 +48,7 @@ public class GameState implements Serializable{
         return userID1;
     }
     public String getUserId2(){
-        return UserID2;
+        return userID2;
     }
     
 }
