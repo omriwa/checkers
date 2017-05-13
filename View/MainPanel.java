@@ -26,7 +26,6 @@ public class MainPanel extends JPanel implements Serializable {
     private JLabel userMessage;
     private FormPanel formPanel;
     private GamePanel gamePanel;
-    private MyMenu menu;
     private MainPanelLis listener;
     private static MainPanel mainPanel = null;
 
@@ -94,20 +93,18 @@ public class MainPanel extends JPanel implements Serializable {
 
                 if (Client.Client.getClient().onLogOn(username, password)) {
                     System.out.println("user connected");
-                    /*change here*/
-                    System.out.println("in class: MainPanel \n in method: action performed \n "
-                            + "switch from LoginPanel to GamePanel");
-                    //if it is a successful login, than switch to "GamePanel" & "OnlineUsersPanel"
                     cardLayout.show(centerPanel, "gamePanel");
                     ouPanel.setVisible(true);
+                    MyMenu.getMenuPanel().disableInputItems();
                 } else {//incorrect input
                     formPanel.setHeadline("incorrect password or username");
                     formPanel.clearInputs();
                 }
 
-            } else {
+            } else if(btn.equalsIgnoreCase("Rigester")) {
                 if (Client.Client.getClient().onRegister(username, password) != null) {
                     System.out.println("user register");
+                    MyMenu.getMenuPanel().disableInputItems();
                 } else {
                     formPanel.setHeadline("User Is Already Exists!");
                 }
