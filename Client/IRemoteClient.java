@@ -11,10 +11,6 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
-/**
- *
- * @author omri
- */
 
 // Callback remote object for invoke methods from server
 public interface IRemoteClient extends Remote, Serializable {

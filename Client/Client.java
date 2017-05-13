@@ -14,11 +14,9 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import CheckerServer.IRemoteServer;
-import Database.UserConfiguration;
 import View.MyButton;
 import View.OnlineUsersPanel;
-import com.sun.java.util.jar.pack.Package;
-import com.sun.xml.internal.ws.handler.HandlerProcessor;
+
 
 import java.io.Serializable;
 import java.rmi.server.UnicastRemoteObject;
@@ -26,10 +24,6 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author omri
- */
 
 public class Client implements Serializable{
 

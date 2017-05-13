@@ -9,13 +9,8 @@ import Client.IRemoteClient;
 import Model.GameState;
 import Model.User;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.Set;
 
-/**
- *
- * @author omri
- */
 public class RemoteServer implements IRemoteServer{
     @Override
     public User connectToServer(String username , String password , IRemoteClient b) throws RemoteException {  

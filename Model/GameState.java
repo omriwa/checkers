@@ -7,10 +7,7 @@ package Model;
 
 import java.io.*;
 
-/**
- *
- * @author omri
- */
+
 public class GameState implements Serializable{
     
     private View.MyButton [][] gameVessels = null;

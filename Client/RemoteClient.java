@@ -9,10 +9,6 @@ import java.rmi.RemoteException;
 import Model.GameState;
 import java.util.ArrayList;
 
-/**
- *
- * @author omri
- */
 public class RemoteClient implements IRemoteClient {
 
     boolean connected = true;
