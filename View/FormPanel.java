@@ -15,22 +15,24 @@ import javax.swing.*;
  */
 public class FormPanel extends JPanel implements Serializable {
 
-    protected JLabel headline, passLbl, userLbl, colorLbl, gameDirLbl;
-    protected JTextField usernameTxt, passwordTxt, colorTxt, gameDirTxt;
+    protected JLabel headline, passLbl, userLbl, colorLbl;
+    protected JTextField usernameTxt, passwordTxt, colorTxt;
     protected JPanel centerPanel;
-    protected JButton registerBtn, sendFormBtn;
-
+    protected JButton registerBtn, sendFormBtn , directoryBtn;
+    protected JFileChooser directoryChoser;
+    protected JComboBox colors;
+    private final String [] colorOptions = {"Black" , "White" , "Blue" , "Red"};
+    
     public FormPanel() {
         this.setLayout(new BorderLayout());
+        colors = new JComboBox(colorOptions);
+        directoryChoser = new JFileChooser();
+        directoryBtn = new JButton("choose directory");
         headline = new JLabel("Please Login");
         userLbl = new JLabel("username:");
         passLbl = new JLabel("password:");
-        colorLbl = new JLabel("color:");
-        gameDirLbl = new JLabel("game Directory:");
         usernameTxt = new JTextField(5);
         passwordTxt = new JTextField(5);
-        colorTxt = new JTextField(5);
-        gameDirTxt = new JTextField(5);
         centerPanel = new JPanel();
         sendFormBtn = new JButton("Login");
 
@@ -41,10 +43,8 @@ public class FormPanel extends JPanel implements Serializable {
         centerPanel.add(usernameTxt);
         centerPanel.add(passLbl);
         centerPanel.add(passwordTxt);
-        centerPanel.add(colorLbl);
-        centerPanel.add(colorTxt);
-        centerPanel.add(gameDirLbl);
-        centerPanel.add(gameDirTxt);
+        centerPanel.add(colors);
+        centerPanel.add(directoryBtn);
         centerPanel.add(sendFormBtn);
         setLoginForm();
     }
@@ -64,19 +64,15 @@ public class FormPanel extends JPanel implements Serializable {
     public void setRegisterForm() {
         sendFormBtn.setText("Register");
         headline.setText("Please Register");
-        colorLbl.setVisible(true);
-        colorTxt.setVisible(true);
-        gameDirLbl.setVisible(true);
-        gameDirTxt.setVisible(true);
+        colors.setVisible(true);
+        directoryBtn.setVisible(true);
     }
 
     public void setLoginForm() {
         sendFormBtn.setText("Login");
         headline.setText("Please Login");
-        colorLbl.setVisible(false);
-        colorTxt.setVisible(false);
-        gameDirLbl.setVisible(false);
-        gameDirTxt.setVisible(false);
+        colors.setVisible(false);
+        directoryBtn.setVisible(false);
     }
 
     public void setHeadline(String s) {
