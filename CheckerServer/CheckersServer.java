@@ -10,6 +10,7 @@ import Client.IRemoteClient;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -73,7 +74,7 @@ public class CheckersServer {
                 games.remove(user);
         }
     }
-
+    /*writing statistic of game to the db and announce the other player*/
     public void processGameStoped(String user){
         //DATA BASE user won.....
         GameState game = games.get(user);
@@ -161,7 +162,7 @@ public class CheckersServer {
     public void updateUsersListInGui(){
         for(String client : onlineClients.keySet())
             try {
-                onlineClients.get(client).updateOnlineUsersList(onlineClients.keySet());
+                onlineClients.get(client).updateOnlineUsersList(getUsersName(client));
             } catch (RemoteException ex) {
                 Logger.getLogger(CheckersServer.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -193,7 +194,9 @@ public class CheckersServer {
         IRemoteClient client1 = (IRemoteClient) onlineClients.get(gameState.getUserId1());
         IRemoteClient client2 = (IRemoteClient) onlineClients.get(gameState.getUserId2());
         try {//upadate the users gamestate
+            gameState.enablePlaying();
             client1.sendGameState(gameState);
+            gameState.changeTurn();
             client2.sendGameState(gameState);
         } catch (RemoteException e) {
         }

@@ -61,7 +61,7 @@ public class OnlineUsersPanel extends JPanel {
         this.repaint();
     }
 
-    public ArrayList<String> getOnlineUsersBtn() {
+    public ArrayList<String> getOnlineUsersName() {
         return usersName;
     }
 

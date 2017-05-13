@@ -16,6 +16,7 @@ public class GameState implements Serializable{
     private View.MyButton [][] gameVessels = null;
     private boolean player1Turn = true;
     private String userID1 , userID2;
+    private boolean enable = false;
     
     public GameState(String u1 , String u2){
         userID1 = u1;
@@ -49,6 +50,12 @@ public class GameState implements Serializable{
     }
     public String getUserId2(){
         return userID2;
+    }
+    public void enablePlaying(){
+        enable = true;
+    }
+    public boolean canPlay(){
+        return enable;
     }
     
 }
