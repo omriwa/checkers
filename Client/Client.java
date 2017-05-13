@@ -5,6 +5,7 @@
  */
 package Client;
 
+import Database.UserConfiguration;
 import Model.GameState;
 import Model.User;
 import java.rmi.RemoteException;
@@ -62,11 +63,21 @@ public class Client implements Serializable{
         System.out.println("Client intialzed");  
     }
     
+    public void loadGame(String user2){
+        String path = user.getSavedGamesDir() + "//user2";
+
+    }
+
+    private void initializeUser(){
+
+    }
+
     public User onRegister(String username , String password){
         try {
             user =  remoteServer.registerInServer(username, password , remoteClient);
             if (user!=null) {
                 UserConfiguration.loadUserConfig(user);
+                initializeUser();
             }
             else
                 return  null;

@@ -6,6 +6,8 @@
 package Model;
 
 import Client.RemoteClient;
+
+import java.awt.*;
 import java.io.Serializable;
 import Client.IRemoteClient;
 
@@ -18,12 +20,37 @@ public class User implements Serializable{
     private String configPath;
     private String savedGamesDir;
     private IRemoteClient bridge;
+    private Color color;
     
     public User(){
         bridge = (IRemoteClient)new RemoteClient();
         
     }
-    
+
+    public String getConfigPath() {
+        return configPath;
+    }
+
+    public void setConfigPath(String configPath) {
+        this.configPath = configPath;
+    }
+
+    public String getSavedGamesDir() {
+        return savedGamesDir;
+    }
+
+    public void setSavedGamesDir(String savedGamesDir) {
+        this.savedGamesDir = savedGamesDir;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
     public User(String username , String configPath , String saveGameDir){
         this();
         this.username = username;
