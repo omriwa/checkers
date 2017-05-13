@@ -8,6 +8,8 @@ package Client;
 import Database.UserConfiguration;
 import Model.GameState;
 import Model.User;
+
+import java.io.File;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -15,6 +17,9 @@ import CheckerServer.IRemoteServer;
 import Database.UserConfiguration;
 import View.MyButton;
 import View.OnlineUsersPanel;
+import com.sun.java.util.jar.pack.Package;
+import com.sun.xml.internal.ws.handler.HandlerProcessor;
+
 import java.io.Serializable;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -63,11 +68,6 @@ public class Client implements Serializable{
         System.out.println("Client intialzed");  
     }
     
-    public void loadGame(String user2){
-        String path = user.getSavedGamesDir() + "//user2";
-
-    }
-
     private void initializeUser(){
 
     }
@@ -113,7 +113,21 @@ public class Client implements Serializable{
         }
         return false;
     }
-    
+
+    public void saveCurrentGame(GameState game){
+        String other = game.getOtherUser(user.getUsername());
+        GameState.saveGame(user.getSavedGamesDir()+ "\\" + other, game);
+    }
+
+    public GameState loadGame(String otherUser) {
+        String path = user.getSavedGamesDir()+"\\"+ otherUser;
+        File f = new File(path);
+        if (f.exists() && !f.isDirectory()) {
+            return  GameState.loadGame(path);
+        } else
+            return null;
+    }
+
     public IRemoteServer getremoteServer(){
         return remoteServer;
     }

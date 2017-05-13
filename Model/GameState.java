@@ -5,7 +5,7 @@
  */
 package Model;
 
-import java.io.Serializable;
+import java.io.*;
 
 /**
  *
@@ -29,7 +29,58 @@ public class GameState implements Serializable{
         else
             return userID1;
     }
-    
+
+    public static void saveGame(String path, GameState game){
+        ObjectOutputStream oos = null;
+        FileOutputStream fout = null;
+        try{
+            fout = new FileOutputStream(path, true);
+            oos = new ObjectOutputStream(fout);
+            oos.writeObject(game);
+            oos.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static GameState loadGame(String path){
+
+        GameState game = null;
+
+        FileInputStream fin = null;
+        ObjectInputStream ois = null;
+
+        try {
+
+            fin = new FileInputStream(path);
+            ois = new ObjectInputStream(fin);
+            game = (GameState) ois.readObject();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+
+            if (fin != null) {
+                try {
+                    fin.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (ois != null) {
+                try {
+                    ois.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+        return game;
+
+    }
+
     public View.MyButton[][] getState(){
         return gameVessels;
     }

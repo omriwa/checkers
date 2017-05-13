@@ -77,8 +77,8 @@ public class CheckersServer {
     /*writing statistic of game to the db and announce the other player*/
     public void processGameStoped(String user){
         //DATA BASE user won.....
+        // event to user by his client
         GameState game = games.get(user);
-        
         games.remove(user);
     }
 
