@@ -112,6 +112,18 @@ public class UserConfiguration {
         }
     }
 
-    }
 
+    public static void main(String [] args){
+            User user = new User();
+            user.setSavedGamesDir("gg");
+            user.setColor(java.awt.Color.BLUE);
+            user.setUsername("aa");
+            user.setConfigPath("c:\\a.xml");
+            saveUserConfig(user);
+
+            User user2 = new User();
+            user2.setConfigPath("c:\\a.xml");
+            loadUserConfig(user2);
+
+    }
 }
