@@ -13,6 +13,9 @@ import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
+
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Dimension;
 
 /**
@@ -21,6 +24,9 @@ import java.awt.Dimension;
  */
 public class MainPanel extends JPanel implements Serializable {
 
+    private CardLayout cardLayout;
+    private JPanel centerPanel;
+    private OnlineUsersPanel ouPanel;
     private JLabel userMessage;
     private FormPanel formPanel;
     private GamePanel gamePanel;
@@ -29,16 +35,24 @@ public class MainPanel extends JPanel implements Serializable {
     private static MainPanel mainPanel = null;
 
     private MainPanel() {
+
+        cardLayout = new CardLayout();//this layout manages the game & form panels
+        centerPanel = new JPanel();
         listener = new MainPanelLis();
         formPanel = new FormPanel();
         gamePanel = GamePanel.getGamePlayPanel();
-
-        //setup
-        gamePanel.setVisible(false);
-        formPanel.setVisible(true);
-        this.add(formPanel);
-        this.add(gamePanel);
-        Dimension d = (this.getSize());
+        ouPanel = new OnlineUsersPanel();
+        //sets the layouts
+        this.setLayout(new BorderLayout());
+        centerPanel.setLayout(cardLayout);
+        //sets the panels
+        centerPanel.add(gamePanel, "gamePanel");
+        centerPanel.add(formPanel, "formPanel");
+        this.add(centerPanel, BorderLayout.CENTER);
+        this.add(ouPanel, BorderLayout.EAST);
+        //first presents only the login Panel 
+        ouPanel.setVisible(false);
+        cardLayout.show(centerPanel, "formPanel");
         formPanel.getFormBtn().addActionListener(listener);
 
     }
@@ -64,10 +78,6 @@ public class MainPanel extends JPanel implements Serializable {
     }
 
     public void setGamePanel() {
-//        Component[] components = this.getComponents();
-//        for(Component component : components)
-//            if(component == formPanel)
-//                this.remove(component);
         formPanel.setVisible(false);
         gamePanel.setVisible(true);
         this.invalidate();
@@ -87,6 +97,12 @@ public class MainPanel extends JPanel implements Serializable {
 
                 if (Client.Client.getClient().onLogOn(username, password)) {
                     System.out.println("user connected");
+                    /*change here*/
+                    System.out.println("in class: MainPanel \n in method: action performed \n "
+                            + "switch from LoginPanel to GamePanel");
+                    //if it is a successful login, than switch to "GamePanel" & "OnlineUsersPanel"
+                    cardLayout.show(centerPanel, "gamePanel");
+                    ouPanel.setVisible(true);
                 } else {//incorrect input
                     formPanel.setHeadline("incorrect password or username");
                     formPanel.clearInputs();
@@ -103,8 +119,8 @@ public class MainPanel extends JPanel implements Serializable {
         }
 
     }
-    
-    public GamePanel getGamePanel(){
+
+    public GamePanel getGamePanel() {
         return gamePanel;
     }
 }

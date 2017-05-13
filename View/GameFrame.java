@@ -24,11 +24,12 @@ public class GameFrame extends JFrame implements Serializable{
         mainPanel = MainPanel.getMainPanel();
         
         //setup
-        this.setSize(400, 400);
+        this.setSize(450, 400);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.add(mainPanel);
         this.setJMenuBar(new MyMenu(this));
         this.setVisible(true);
+        this.setResizable(false);
     }
     
     public static GameFrame getGameFrame(){

@@ -26,11 +26,13 @@ import java.util.logging.Logger;
  */
 
 public class Client implements Serializable{
+
     private User user;
     private IRemoteClient remoteClient;
     private GameState gameState;
     private IRemoteServer remoteServer;
     private static Client client = null;
+    private boolean alive = false;
     
     private Client(){
         remoteClient = new RemoteClient();
@@ -46,6 +48,10 @@ public class Client implements Serializable{
     
     public static Client getClient(){
         return client;
+    }
+    
+    public static boolean isAlive() {
+        return client.alive;
     }
     
     private void intialize(String host , String objName){

@@ -18,28 +18,29 @@ import javax.swing.JPanel;
  */
 public class GamePanel extends JPanel {
 
-    private JPanel buttonsComponent, onlineUsersPanel;
+    private JPanel buttonsComponent;;
     private VesselListener listener;
-    private MyButton[][] board;
+    private MyButton[][] board;//matrix of buttons
     private static GamePanel gamePanel = null;
     private final int ROW = 10, COL = 10;
 
     private GamePanel() {
+    
+    	setLayout(new BorderLayout());
         buttonsComponent = new JPanel();
         buttonsComponent.setLayout(new GridLayout(10, 10));
         board = new MyButton[ROW][COL];
-        
-        //onlineUsersPanel = (JPanel)(new OnlineUsersPanel(users));
-        onlineUsersPanel = (JPanel) (OnlineUsersPanel.getOnlineUsersPanel());
         listener = new VesselListener(board);
 
         //setup
         this.setLayout(new BorderLayout());
-        this.add(onlineUsersPanel, BorderLayout.EAST);
         this.add(buttonsComponent, BorderLayout.CENTER);
         buttonSetUp();
         vesselSetUp(0, 4, true);//player1 set up vessels
         vesselSetUp(6, 10, false);//player1 set up vessels
+        
+        this.add(buttonsComponent,BorderLayout.CENTER);
+       
     }
 
     public static GamePanel getGamePlayPanel() {
@@ -95,6 +96,13 @@ public class GamePanel extends JPanel {
     
     public MyButton [][] getBoard(){
         return board;
+    }
+    
+    public static void main(String[] args) {
+        JFrame f = new JFrame();
+        f.setVisible(true);
+        f.setSize(500, 500);
+        f.add(new GamePanel());
     }
 
 }

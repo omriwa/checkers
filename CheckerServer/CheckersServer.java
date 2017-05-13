@@ -1,5 +1,6 @@
 package CheckerServer;
 
+import Client.Client;
 import Database.DatabaseManager;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -87,26 +88,26 @@ public class CheckersServer {
         }
         return null;
     }
-//    private Thread checkUsersOnline = new Thread(new Runnable() {
-//        public void run() {
-//            try {
-//                for (User user : onlineUsers) {
-//                    try {
-//                        if (!user.isAlive()) {//disconected user
-//                            clientDisconnected(user);
-//                        }
-//                    } catch (Exception e) {
-//                        clientDisconnected(user);
-//                    }
-//                }
-//            } finally {
-//                try {
-//                    Thread.sleep(100);
-//                } catch (Exception e) {
-//                }
-//            }
-//        }
-//    });
+    private Thread checkUsersOnline = new Thread(new Runnable() {
+        public void run() {
+            try {
+                for (String client : onlineClients.keySet()) {
+                    try {
+                        if (!Client.isAlive()) {//disconected user
+                            clientDisconnected(client);
+                        }
+                    } catch (Exception e) {
+                        clientDisconnected(client);
+                    }
+                }
+            } finally {
+                try {
+                    Thread.sleep(1000);
+                } catch (Exception e) {
+                }
+            }
+        }
+    });
 
     private void initialize() {
         remoteServer = new RemoteServer();
@@ -144,7 +145,7 @@ public class CheckersServer {
         games.put(uId1, gameState);
         games.put(uId2, gameState);
         //send to users
-
+        this.sendGameState(gameState);
     }
 
     /*return the the user details from database and creating a user*/
