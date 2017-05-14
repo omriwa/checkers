@@ -11,10 +11,6 @@ import java.awt.*;
 import java.io.Serializable;
 import Client.IRemoteClient;
 
-/**
- *
- * @author omri
- */
 public class User implements Serializable{
     private String username;
     private String configPath;

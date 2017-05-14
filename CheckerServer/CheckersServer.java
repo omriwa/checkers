@@ -3,7 +3,7 @@ package CheckerServer;
 import Database.DatabaseManager;
 import java.rmi.RemoteException;
 import java.util.HashMap;
-
+import Model.UserInfo;
 import Model.GameState;
 import Model.User;
 import Client.IRemoteClient;
@@ -82,10 +82,10 @@ public class CheckersServer {
         games.remove(user);
     }
 
-    public User register(String username, String password , IRemoteClient b) {
-        if(databaseManager.registerUser(username, password)) {
+    public User register(UserInfo userInfo , IRemoteClient b) {
+        if(databaseManager.registerUser(userInfo)) {
             //add to hash
-            return connect(username, password, b);
+            return connect(userInfo.getUserName(), userInfo.getPassword(), b);
  
         }
         return null;

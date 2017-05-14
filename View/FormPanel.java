@@ -6,8 +6,11 @@
 package View;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.Serializable;
 import javax.swing.*;
+import Model.UserInfo;
 
 /**
  *
@@ -16,13 +19,14 @@ import javax.swing.*;
 public class FormPanel extends JPanel implements Serializable {
 
     protected JLabel headline, passLbl, userLbl, colorLbl;
-    protected JTextField usernameTxt, passwordTxt, colorTxt;
+    protected JTextField usernameTxt, passwordTxt;
     protected JPanel centerPanel;
-    protected JButton registerBtn, sendFormBtn , directoryBtn;
+    protected JButton registerBtn, sendFormBtn, directoryBtn;
     protected JFileChooser directoryChoser;
     protected JComboBox colors;
-    private final String [] colorOptions = {"Black" , "White" , "Blue" , "Red"};
-    
+    protected String path = null;
+    private final String[] colorOptions = {"Black", "White", "Blue", "Red"};
+
     public FormPanel() {
         this.setLayout(new BorderLayout());
         colors = new JComboBox(colorOptions);
@@ -47,6 +51,29 @@ public class FormPanel extends JPanel implements Serializable {
         centerPanel.add(directoryBtn);
         centerPanel.add(sendFormBtn);
         setLoginForm();
+        directoryBtn.addActionListener(new FormListener());
+    }
+
+    private class FormListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String userInfo = "choose you directory, make a xml file and choose it";
+            JFrame f = new JFrame();
+            JDialog dialog = new JDialog
+        (f, "directory choosing info" , true);
+            JLabel info = new JLabel(userInfo);
+            dialog.add(info);
+            dialog.setSize(400, 100);
+            dialog.setVisible(true);
+            JFileChooser fileChooser = new JFileChooser();
+            int result = fileChooser.showOpenDialog(fileChooser);
+            if (result == JFileChooser.APPROVE_OPTION) {
+               path = fileChooser.getCurrentDirectory().getAbsolutePath();
+            }
+            System.out.println(path);
+        }
+
     }
 
     public String getUsername() {
@@ -83,6 +110,21 @@ public class FormPanel extends JPanel implements Serializable {
     public void clearInputs() {
         usernameTxt.setText("");
         passwordTxt.setText("");
+    }
+    
+    public UserInfo getUserInfo(){
+        if(usernameTxt.getText().length() > 0 && passwordTxt.getText().length() > 0 
+            && path != null){
+            String color = colors.getSelectedItem().toString();
+            return new UserInfo(getUsername() , getPassword() , path , color);
+        }
+        else
+            return null;
+    }
+    
+    public void fireLoginEvent(){
+        setLoginForm();
+        sendFormBtn.doClick();
     }
 
     public static void main(String[] args) {

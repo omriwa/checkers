@@ -1,28 +1,16 @@
 package Database;
 
 import Model.User;
-import com.mysql.jdbc.DatabaseMetaData;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+
+import java.sql.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import Model.UserInfo;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-/**
- *
- * @author omri
- */
 public class DatabaseManager {
 
     private Connection connection = null;
@@ -74,24 +62,6 @@ public class DatabaseManager {
         System.out.println("add info seccessfuly");
     }
 
-    /*public User userExist(String username, String password) {
-        try {
-            state = connection.createStatement();
-            String query = "SELECT username FROM users WHERE username="
-                    + "'" + username + "'"
-                    + " AND password=" + "'" + password + "'";
-            ResultSet rs = state.executeQuery(query);
-            if (rs.first())//there is such username with this password
-            {
-                return new User(rs.getString("username"), rs.getString("configPath"), "game_dir");
-            }
-
-        } catch (SQLException ex) {
-            Logger.getLogger(DatabaseManager.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }*/
-
     public User getUserFromDB(String uname, String pass) {
         User res = null;
         try {
@@ -109,17 +79,18 @@ public class DatabaseManager {
         return res;
     }
 
-    public boolean registerUser(String username, String password) {
+    //accepts UserInfo 
+    public boolean registerUser(UserInfo ui) {
         try {
-            if (!checkIfUserExists(username)) {
+            if (!checkIfUserExists(ui.getUserName())) {
                 state = connection.createStatement();
                 String query, dateStr;
                 DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                 Date date = new Date();
                 dateStr = (dateFormat.format(date));
-                query = "INSERT INTO users VALUES(" + "'" + username + "'"
-                        + "," + "'" + password + "'" + "," + "'color'"
-                        + "," + "'config'" + "," + "'" + dateStr + "'" + ")";
+                query = "INSERT INTO users VALUES(" + "'" + ui.getUserName() + "'"
+                        + "," + "'" + ui.getPassword() + "'" + "," + "'" +  ui.getColor()
+                         + "'" + "," + "'" + ui.getConfigPath() + "'" + "," + "'" + dateStr + "'" + ")";
                 state.execute(query);
                 return true;
             }

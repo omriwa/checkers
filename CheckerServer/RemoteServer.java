@@ -5,17 +5,13 @@
  */
 package CheckerServer;
 
+import Model.UserInfo;
 import Client.IRemoteClient;
 import Model.GameState;
 import Model.User;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.Set;
 
-/**
- *
- * @author omri
- */
 public class RemoteServer implements IRemoteServer{
     @Override
     public User connectToServer(String username , String password , IRemoteClient b) throws RemoteException {  
@@ -29,8 +25,8 @@ public class RemoteServer implements IRemoteServer{
     }
 
     @Override
-    public User registerInServer(String username, String password , IRemoteClient b) throws RemoteException {
-        return CheckersServer.getServer().register(username , password , b);
+    public User registerInServer(UserInfo u , IRemoteClient b) throws RemoteException {
+        return CheckersServer.getServer().register(u, b);
     }
 
     @Override

@@ -9,7 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
 import javax.swing.*;
-
+import Model.UserInfo;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
@@ -49,7 +49,7 @@ public class MainPanel extends JPanel implements Serializable {
         ouPanel.setVisible(false);
         cardLayout.show(centerPanel, "formPanel");
         formPanel.getFormBtn().addActionListener(listener);
-        ouPanel.setPreferredSize(new Dimension(100 , 400));
+        ouPanel.setPreferredSize(new Dimension(100, 400));
 
     }
 
@@ -98,18 +98,24 @@ public class MainPanel extends JPanel implements Serializable {
                     MyMenu.getMenuPanel().disableInputItems();
                 } else {//incorrect input
                     formPanel.setHeadline("incorrect password or username");
-                    formPanel.clearInputs();
                 }
 
-            } else if(btn.equalsIgnoreCase("Rigester")) {
-                if (Client.Client.getClient().onRegister(username, password) != null) {
-                    System.out.println("user register");
-                    MyMenu.getMenuPanel().disableInputItems();
+            } else if (btn.equalsIgnoreCase("Register")) {
+                UserInfo userInfo = formPanel.getUserInfo();
+                System.out.println(formPanel.getUsername());
+                if (userInfo != null) {
+                    if (Client.Client.getClient().onRegister(userInfo) != null) {
+                        System.out.println("user registered");
+                        formPanel.fireLoginEvent();
+                    } else {
+                        formPanel.setHeadline("User Is Already Exists!");
+                    }
                 } else {
-                    formPanel.setHeadline("User Is Already Exists!");
+                    formPanel.setHeadline("Forgot to fill all fields");
                 }
-            }
 
+            }
+            formPanel.clearInputs();
         }
 
     }
