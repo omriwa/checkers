@@ -216,7 +216,7 @@ public class CheckersServer {
             onlineClients.remove(user);
             return true;
         }
-        return true;
+        return false;
     }
 
 }
