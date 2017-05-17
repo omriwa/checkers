@@ -22,4 +22,6 @@ public interface IRemoteServer extends Remote , Serializable{
 
     public void sendGameState(GameState gameState) throws RemoteException;
     public void changeTurn(GameState gameState) throws RemoteException;
+
+    public boolean disconnect(User user) throws RemoteException;
 }

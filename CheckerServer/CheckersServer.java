@@ -210,5 +210,13 @@ public class CheckersServer {
         uName.remove(curUser);
         return uName;
     }
+/*disconnect the user from server, if user exists it delete from the user structure and return true , else false*/
+    public boolean disconnect(User user) {
+        if(user != null && onlineClients.containsKey(user.getUsername())){
+            onlineClients.remove(user);
+            return true;
+        }
+        return true;
+    }
 
 }

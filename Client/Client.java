@@ -7,7 +7,6 @@ package Client;
 
 import Model.GameState;
 import Model.User;
-
 import java.io.File;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -106,6 +105,15 @@ public class Client implements Serializable{
             ex.printStackTrace();
         }
         return false;
+    }
+    
+    public boolean onDisconnect(){
+        try {
+            return remoteServer.disconnect(user);
+        } catch (RemoteException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       return false;
     }
 
     public void saveCurrentGame(GameState game){

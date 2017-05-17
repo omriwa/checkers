@@ -44,5 +44,10 @@ public class RemoteServer implements IRemoteServer{
     public void changeTurn(GameState gameState){
         CheckersServer.getServer().changeGameTurn(gameState);
     }
+
+    @Override
+    public boolean disconnect(User user) {
+        return CheckersServer.getServer().disconnect(user);
+    }
  
 }
