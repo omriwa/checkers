@@ -5,11 +5,11 @@
  */
 package View;
 
+import Model.UserInfo;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
 import javax.swing.*;
-import Model.UserInfo;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;

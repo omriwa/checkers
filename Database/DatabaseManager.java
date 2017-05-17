@@ -82,15 +82,15 @@ public class DatabaseManager {
     //accepts UserInfo 
     public boolean registerUser(UserInfo ui) {
         try {
-            if (!checkIfUserExists(ui.getUserName())) {
+            if (!checkIfUserExists(ui.getUsername())) {
                 state = connection.createStatement();
                 String query, dateStr;
                 DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                 Date date = new Date();
                 dateStr = (dateFormat.format(date));
-                query = "INSERT INTO users VALUES(" + "'" + ui.getUserName() + "'"
-                        + "," + "'" + ui.getPassword() + "'" + "," + "'" +  ui.getColor()
-                         + "'" + "," + "'" + ui.getConfigPath() + "'" + "," + "'" + dateStr + "'" + ")";
+                query = "INSERT INTO users VALUES(" + "'" + ui.getUsername() + "'"
+                        + "," + "'" + ui.getPass() + "'" + "," + "'" +  ui.getColor()
+                         + "'" + "," + "'" + ui.getPath() + "'" + "," + "'" + dateStr + "'" + ")";
                 state.execute(query);
                 return true;
             }

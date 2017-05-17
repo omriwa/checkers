@@ -13,6 +13,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import CheckerServer.IRemoteServer;
+import Model.UserInfo;
 import View.MyButton;
 import View.OnlineUsersPanel;
 
@@ -65,9 +66,9 @@ public class Client implements Serializable{
 
     }
 
-    public User onRegister(String username , String password){
+    public User onRegister(UserInfo user){
         try {
-            user =  remoteServer.registerInServer(username, password , remoteClient);
+            user =  remoteServer.registerInServer(user , remoteClient);
             if (user!=null) {
                 UserConfiguration.loadUserConfig(user);
                 initializeUser();
