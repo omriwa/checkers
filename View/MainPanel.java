@@ -80,6 +80,14 @@ public class MainPanel extends JPanel implements Serializable {
         this.validate();
         this.repaint();
     }
+    
+    public void setFormPanel() {
+        formPanel.setVisible(true);
+        gamePanel.setVisible(false);
+        this.invalidate();
+        this.validate();
+        this.repaint();
+    }
 
     private class MainPanelLis implements ActionListener, Serializable {
 
