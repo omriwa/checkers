@@ -11,7 +11,7 @@ import java.io.Serializable;
  *
  * @author omri
  */
-public class UserInfo implements Serializable{
+public class UserInfo implements Serializable{//for registration
     
     private String pass , username , color , path;
     
