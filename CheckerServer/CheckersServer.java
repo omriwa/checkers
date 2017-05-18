@@ -3,7 +3,7 @@ package CheckerServer;
 import Database.DatabaseManager;
 import java.rmi.RemoteException;
 import java.util.HashMap;
-import Model.UserInfo;
+import Model.User;
 import Model.GameState;
 import Model.User;
 import Client.IRemoteClient;
@@ -62,9 +62,9 @@ public class CheckersServer {
     }
 
     private void clientDisconnected(String user) {
-        onlineClients.remove(user);
         try {
             onlineClients.get(user).disconnect();
+            onlineClients.remove(user);
         } catch (RemoteException ex) {
             Logger.getLogger(CheckersServer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -84,10 +84,10 @@ public class CheckersServer {
         games.remove(user);
     }
 
-    public User register(UserInfo userInfo, IRemoteClient b) {
-        if (databaseManager.registerUser(userInfo)) {
+    public User register(User userInfo , String pass, IRemoteClient b) {
+        if (databaseManager.registerUser(userInfo , pass)) {
             //add to hash
-            return connect(userInfo.getUsername(), userInfo.getPass(), b);
+            return connect(userInfo.getUsername(), pass, b);
 
         }
         return null;
@@ -96,6 +96,7 @@ public class CheckersServer {
     private void initialize() {
         remoteServer = new RemoteServer();
         onlineClients = new HashMap<String, IRemoteClient>();
+        games = new HashMap<>();
         createDataBase();
         new ClientManager().start();
     }
@@ -178,15 +179,6 @@ public class CheckersServer {
         return uName;
     }
 
-    /*disconnect the user from server, if user exists it delete from the user structure and return true , else false*/
-    public boolean disconnect(String user) {
-        if (onlineClients.containsKey(user)) {
-            onlineClients.remove(user);
-            return true;
-        }
-        return false;
-    }
-
     /*for manging the clients*/
     private class ClientManager extends Thread {
         
@@ -201,7 +193,7 @@ public class CheckersServer {
                                 clientDisconnected(client);
                             }
                         } catch (Exception e) {
-                            clientDisconnected(client);
+                             System.out.println("cant disconnect user");
                         }
                     }
                 } finally {

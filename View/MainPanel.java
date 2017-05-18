@@ -5,7 +5,7 @@
  */
 package View;
 
-import Model.UserInfo;
+import Model.User;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
@@ -109,10 +109,10 @@ public class MainPanel extends JPanel implements Serializable {
                 }
 
             } else if (btn.equalsIgnoreCase("Register")) {
-                UserInfo userInfo = formPanel.getUserInfo();
+                User userInfo = formPanel.getUserInfo();
                 System.out.println(formPanel.getUsername());
                 if (userInfo != null) {
-                    if (Client.Client.getClient().onRegister(userInfo) != null) {
+                    if (Client.Client.getClient().onRegister(userInfo , password) != null) {
                         System.out.println("user registered");
                         formPanel.fireLoginEvent();
                     } else {

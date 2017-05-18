@@ -7,12 +7,11 @@ package Client;
 
 import Model.GameState;
 import Model.User;
-import java.io.File;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import CheckerServer.IRemoteServer;
-import Model.UserInfo;
+import Database.UserConfiguration;
 import View.MyButton;
 import View.OnlineUsersPanel;
 
@@ -65,9 +64,9 @@ public class Client implements Serializable{
 
     }
 
-    public User onRegister(UserInfo user){
+    public User onRegister(User user , String pass){
         try {
-            user =  remoteServer.registerInServer(user , remoteClient);
+            user =  remoteServer.registerInServer(user , pass , remoteClient);
             if (user!=null) {
                 UserConfiguration.loadUserConfig(user);
                 initializeUser();
@@ -107,27 +106,12 @@ public class Client implements Serializable{
         return false;
     }
     
-    public boolean onDisconnect(){
+    public void onDisconnect(){
         try {
-            return remoteServer.disconnect(user);
+            remoteClient.disconnect();
         } catch (RemoteException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
-       return false;
-    }
-
-    public void saveCurrentGame(GameState game){
-        String other = game.getOtherUser(user.getUsername());
-        GameState.saveGame(user.getSavedGamesDir()+ "\\" + other, game);
-    }
-
-    public GameState loadGame(String otherUser) {
-        String path = user.getSavedGamesDir()+"\\"+ otherUser;
-        File f = new File(path);
-        if (f.exists() && !f.isDirectory()) {
-            return  GameState.loadGame(path);
-        } else
-            return null;
     }
 
     public IRemoteServer getremoteServer(){

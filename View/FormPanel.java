@@ -10,7 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
 import javax.swing.*;
-import Model.UserInfo;
+import Model.User;
 
 /**
  *
@@ -112,11 +112,11 @@ public class FormPanel extends JPanel implements Serializable {
         passwordTxt.setText("");
     }
     
-    public UserInfo getUserInfo(){
+    public User getUserInfo(){
         if(usernameTxt.getText().length() > 0 && passwordTxt.getText().length() > 0 
             && path != null){
             String color = colors.getSelectedItem().toString();
-            return new UserInfo(getUsername() , getPassword() , path , color);
+            return new User(getUsername(), path , color);
         }
         else
             return null;

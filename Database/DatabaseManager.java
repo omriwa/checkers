@@ -9,7 +9,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import Model.UserInfo;
+import Model.User;
 
 public class DatabaseManager {
 
@@ -80,17 +80,17 @@ public class DatabaseManager {
     }
 
     //accepts UserInfo 
-    public boolean registerUser(UserInfo ui) {
+    public boolean registerUser(User u , String pass) {
         try {
-            if (!checkIfUserExists(ui.getUsername())) {
+            if (!checkIfUserExists(u.getUsername())) {
                 state = connection.createStatement();
                 String query, dateStr;
                 DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                 Date date = new Date();
                 dateStr = (dateFormat.format(date));
-                query = "INSERT INTO users VALUES(" + "'" + ui.getUsername() + "'"
-                        + "," + "'" + ui.getPass() + "'" + "," + "'" +  ui.getColor()
-                         + "'" + "," + "'" + ui.getPath() + "'" + "," + "'" + dateStr + "'" + ")";
+                query = "INSERT INTO users VALUES(" + "'" + u.getUsername() + "'"
+                        + "," + "'" + pass + "'" + "," + "'" +  u.getColor()
+                         + "'" + "," + "'" + u.getConfigPath() + "'" + "," + "'" + dateStr + "'" + ")";
                 state.execute(query);
                 return true;
             }

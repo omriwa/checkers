@@ -1,6 +1,6 @@
 package CheckerServer;
 
-import Model.UserInfo;
+import Model.User;
 import Client.IRemoteClient;
 import Model.GameState;
 import Model.User;
@@ -9,19 +9,18 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Set;
 
+public interface IRemoteServer extends Remote, Serializable {
 
-public interface IRemoteServer extends Remote , Serializable{
-    
-    public User connectToServer(String username , String password , IRemoteClient b) throws RemoteException;
-    
+    public User connectToServer(String username, String password, IRemoteClient b) throws RemoteException;
+
     public Set<String> getOnlineUsers() throws RemoteException;
 
-    public User registerInServer(UserInfo u , IRemoteClient b) throws RemoteException;
-    
-    public User getUser(String username , String password) throws RemoteException;
+    public User registerInServer(User u, String pass, IRemoteClient b) throws RemoteException;
+
+    public User getUser(String username, String password) throws RemoteException;
 
     public void sendGameState(GameState gameState) throws RemoteException;
+
     public void changeTurn(GameState gameState) throws RemoteException;
 
-    public boolean disconnect(User user) throws RemoteException;
 }

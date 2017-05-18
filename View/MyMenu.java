@@ -85,12 +85,10 @@ public class MyMenu extends JMenuBar implements Serializable {
                 mainPanel.setRegisterPanel();
                 MyMenu.getMenuPanel().enableInputItems();
             } else if (e.getSource().equals(disconnectItem)) {
-                if(Client.Client.getClient().onDisconnect()){
-                    mainPanel.setFormPanel();
-                    mainPanel.setLoginPanel();
-                    MyMenu.getMenuPanel().enableInputItems();
-                }
-                    
+                Client.Client.getClient().onDisconnect();
+                mainPanel.setFormPanel();
+                mainPanel.setLoginPanel();
+                MyMenu.getMenuPanel().enableInputItems();
             }
 
         }

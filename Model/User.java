@@ -11,16 +11,23 @@ import java.awt.*;
 import java.io.Serializable;
 import Client.IRemoteClient;
 
-public class User implements Serializable{
+public class User implements Serializable {
+
     private String username;
     private String configPath;
-    private String savedGamesDir;
     private IRemoteClient bridge;
-    private Color color;
-    
-    public User(){
-        bridge = (IRemoteClient)new RemoteClient();
-        
+    private String color;
+
+    public User() {
+        bridge = (IRemoteClient) new RemoteClient();
+
+    }
+
+    public User(String username, String configPath, String color) {
+        this();
+        this.username = username;
+        this.configPath = configPath;
+        this.color = color;
     }
 
     public String getConfigPath() {
@@ -31,43 +38,28 @@ public class User implements Serializable{
         this.configPath = configPath;
     }
 
-    public String getSavedGamesDir() {
-        return savedGamesDir;
-    }
-
-    public void setSavedGamesDir(String savedGamesDir) {
-        this.savedGamesDir = savedGamesDir;
-    }
-
-    public Color getColor() {
+    public String getColor() {
         return color;
     }
 
-    public void setColor(Color color) {
+    public void setColor(String color) {
         this.color = color;
     }
 
-    public User(String username , String configPath , String saveGameDir){
-        this();
-        this.username = username;
-        this.configPath = configPath;
-        this.savedGamesDir = saveGameDir;
-    }
-    
-    public String getUsername(){
+    public String getUsername() {
         return username;
     }
-    
-    public IRemoteClient getBridge(){
+
+    public IRemoteClient getBridge() {
         return bridge;
     }
 
     public void setUsername(String username) {
         this.username = username;
     }
-    
-    public void setBridge(IRemoteClient b){
+
+    public void setBridge(IRemoteClient b) {
         bridge = b;
     }
-    
+
 }
