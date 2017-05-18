@@ -13,10 +13,6 @@ public class RemoteClient implements IRemoteClient {
 
     boolean connected = true;
 
-    public RemoteClient() {
-
-    }
-
     @Override
     public void sendGameState(GameState gameState) throws RemoteException {
         Client.getClient().setGameState(gameState);

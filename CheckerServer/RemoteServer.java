@@ -47,7 +47,7 @@ public class RemoteServer implements IRemoteServer{
 
     @Override
     public boolean disconnect(User user) {
-        return CheckersServer.getServer().disconnect(user);
+        return CheckersServer.getServer().disconnect(user.getUsername());
     }
  
 }

@@ -113,12 +113,11 @@ public class UserConfiguration {
             user.setSavedGamesDir("gg");
             user.setColor(java.awt.Color.BLUE);
             user.setUsername("aa");
-            user.setConfigPath("c:\\a.xml");
+            user.setConfigPath("c:\\Users\\omri\\Desktop\\a.xml");
             saveUserConfig(user);
 
             User user2 = new User();
-            user2.setConfigPath("c:\\a.xml");
+            user2.setConfigPath("c:\\Users\\omri\\Desktop\\a.xml");
             loadUserConfig(user2);
-
     }
 }
