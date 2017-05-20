@@ -51,7 +51,6 @@ public class CheckersServer {
                 user.setBridge(b);
                 onlineClients.put(user.getUsername(), b);
                 StartGame(new GameState(username, username));
-                updateUsersListInGui();
             }
         }
         return user;
@@ -83,15 +82,16 @@ public class CheckersServer {
         IRemoteClient client = onlineClients.get(user);
         String msg = "The other user disconnected";
         try {
-            client.diconnect(msg);
+            if(client != null)
+                client.diconnect(msg);
         } catch (RemoteException ex) {
             Logger.getLogger(CheckersServer.class.getName()).log(Level.SEVERE, null, ex);
         }
         games.remove(user);
     }
 
-    public User register(User userInfo , String pass, IRemoteClient b) {
-        if (databaseManager.registerUser(userInfo , pass)) {
+    public User register(User userInfo, String pass, IRemoteClient b) {
+        if (databaseManager.registerUser(userInfo, pass)) {
             //add to hash
             return connect(userInfo.getUsername(), pass, b);
 
@@ -158,7 +158,7 @@ public class CheckersServer {
     }
 
     public void StartGame(GameState gameState) {
-        games.put(gameState.getUserId1() , gameState);
+        games.put(gameState.getUserId1(), gameState);
         games.put(gameState.getUserId2(), gameState);
         sendGameState(gameState);
     }
@@ -189,28 +189,46 @@ public class CheckersServer {
 
     /*for manging the clients*/
     private class ClientManager extends Thread {
-        
+
         @Override
         public void run() {
             while (true) {
+                checkDisconnectedUsers();
+                sendOnlineUserList();
                 try {
-                    for (String client : onlineClients.keySet()) {
-                        try {
-                            if (onlineClients.get(client) != null && !onlineClients.get(client).isAlive()) {//disconected user
-                                clientDisconnected(client);
-                            }
-                        } catch (Exception e) {
-                             System.out.println("cant disconnect user");
-                        }
-                    }
-                } finally {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (Exception e) {
-                    }
+                    Thread.sleep(1000);
+                } catch (Exception e) {
                 }
             }
         }
 
+        private void checkDisconnectedUsers() {
+            for (String client : onlineClients.keySet()) {
+                try {
+                    if (onlineClients.get(client) != null && !onlineClients.get(client).isAlive()) {//disconected user
+                        clientDisconnected(client);
+                    }
+                } catch (Exception e) {
+                    System.out.println("cant disconnect user");
+                }
+            }
+
+        }
+        
+        private void sendOnlineUserList(){
+            ArrayList <String> onlineUsersList = new ArrayList<>(onlineClients.keySet());
+            for(String client : onlineClients.keySet()){
+                try {
+                    if (onlineClients.get(client) != null && onlineClients.get(client).isAlive()) {//disconected user
+                        ArrayList<String> clientUsersList = new ArrayList<>(onlineUsersList);
+                        clientUsersList.remove(client);
+                        if(!clientUsersList.isEmpty())
+                            onlineClients.get(client).updateOnlineUsersList(clientUsersList);
+                    }
+                } catch (Exception e) {
+                    System.out.println("cant send list to user");
+                }
+            }
+        }
     }
 }

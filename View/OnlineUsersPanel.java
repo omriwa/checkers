@@ -45,12 +45,14 @@ public class OnlineUsersPanel extends JPanel {
     /*get the online users from the server*/
     public void setOnlineUsers(ArrayList<String> onlineUsers) {
         usersName.clear();
-        if (onlineUsers != null) {
             for (String uName : onlineUsers) {
                 usersName.add(uName);
             }
-        }
-
+        onlineUsersList = new JList(usersName.toArray());
+        listScroller = new JScrollPane(onlineUsersList);
+        this.remove(listScroller);
+        this.add(listScroller, BorderLayout.CENTER);
+        repaint();
         //fix that the new users will appear, use usersName
     }
 

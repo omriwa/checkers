@@ -9,6 +9,7 @@ import Controller.VesselListener;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.lang.reflect.Field;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -18,15 +19,17 @@ import javax.swing.JPanel;
  */
 public class GamePanel extends JPanel {
 
-    private JPanel buttonsComponent;;
+    private JPanel buttonsComponent;
+    ;
     private VesselListener listener;
     private MyButton[][] board;//matrix of buttons
     private static GamePanel gamePanel = null;
     private final int ROW = 10, COL = 10;
+    private Color usersColor = Color.BLACK;//black is default color - the user may set preferred color
 
     private GamePanel() {
-    
-    	setLayout(new BorderLayout());
+
+        setLayout(new BorderLayout());
         buttonsComponent = new JPanel();
         buttonsComponent.setLayout(new GridLayout(10, 10));
         board = new MyButton[ROW][COL];
@@ -38,9 +41,9 @@ public class GamePanel extends JPanel {
         buttonSetUp();
         vesselSetUp(0, 4, true);//player1 set up vessels
         vesselSetUp(6, 10, false);//player1 set up vessels
-        
-        this.add(buttonsComponent,BorderLayout.CENTER);
-       
+
+        this.add(buttonsComponent, BorderLayout.CENTER);
+
     }
 
     public static GamePanel getGamePlayPanel() {
@@ -62,7 +65,7 @@ public class GamePanel extends JPanel {
                 if ((i + j) % 2 == 0) {
                     board[i][j].setBackground(Color.white);
                 } else {
-                    board[i][j].setBackground(Color.black);
+                    board[i][j].setBackground(usersColor);
                 }
             }
 
@@ -93,16 +96,28 @@ public class GamePanel extends JPanel {
             }
         }
     }
-    
-    public MyButton [][] getBoard(){
+
+    public MyButton[][] getBoard() {
         return board;
     }
-    
+
     public static void main(String[] args) {
         JFrame f = new JFrame();
         f.setVisible(true);
         f.setSize(500, 500);
         f.add(new GamePanel());
+    }
+
+    //sets new color for the board
+    public void setPreferredColor(String c) {
+        Color color;
+        try {
+            Field field = Class.forName("java.awt.Color").getField(c);
+            color = (Color) field.get(null);
+        } catch (Exception e) {
+            color = Color.BLACK; // Not defined
+        }
+        usersColor = color;
     }
 
 }

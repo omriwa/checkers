@@ -12,6 +12,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import CheckerServer.IRemoteServer;
 import Database.UserConfiguration;
+import View.GamePanel;
 import View.MyButton;
 import View.OnlineUsersPanel;
 
@@ -83,9 +84,12 @@ public class Client implements Serializable{
         try {
             User user = remoteServer.connectToServer(username, pass , remoteClient);
             if (user != null){
-//                user = remoteServer.getUser(username , pass);
-//                user = loadConfiguration(user.getConfigurationPath());
-//                //xml loading user conf set to user
+            	this.user = user;
+            	 //set the preferred color 
+                GamePanel gp = GamePanel.getGamePlayPanel();
+                gp.setPreferredColor(user.getColor());
+                
+               //xml loading user conf set to user
                 if(gameState != null)
                     System.out.println("game state");
                 return true;
@@ -113,6 +117,7 @@ public class Client implements Serializable{
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
 
     public IRemoteServer getremoteServer(){
         return remoteServer;
