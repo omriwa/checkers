@@ -70,17 +70,23 @@ public class CheckersServer {
         }
         if (games.containsKey(user)) {
             processGameStoped(games.get(user).getOtherUser(user));
-            if (games.containsKey((user))) {
-                games.remove(user);
-            }
+            games.remove(user);//remove the game from hash of the disconnected user
         }
     }
 
     /*writing statistic of game to the db and announce the other player*/
     public void processGameStoped(String user) {
-        //DATA BASE user won.....
-        // event to user by his client
         GameState game = games.get(user);
+        game.setWinner(user);
+        game.setEndTime();//set finish time of the game
+        databaseManager.writeGameStatistic(game);//writing the game statistic
+        IRemoteClient client = onlineClients.get(user);
+        String msg = "The other user disconnected";
+        try {
+            client.diconnect(msg);
+        } catch (RemoteException ex) {
+            Logger.getLogger(CheckersServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
         games.remove(user);
     }
 
@@ -152,6 +158,8 @@ public class CheckersServer {
     }
 
     public void StartGame(GameState gameState) {
+        games.put(gameState.getUserId1() , gameState);
+        games.put(gameState.getUserId2(), gameState);
         sendGameState(gameState);
     }
 
@@ -185,7 +193,6 @@ public class CheckersServer {
         @Override
         public void run() {
             while (true) {
-                System.out.println("thread");
                 try {
                     for (String client : onlineClients.keySet()) {
                         try {

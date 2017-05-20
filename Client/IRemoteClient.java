@@ -22,4 +22,6 @@ public interface IRemoteClient extends Remote, Serializable {
     public boolean isAlive() throws RemoteException;
     
     public void disconnect() throws RemoteException;
+    
+    public void diconnect(String m) throws RemoteException;
 }

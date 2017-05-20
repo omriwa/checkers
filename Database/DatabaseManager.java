@@ -1,5 +1,6 @@
 package Database;
 
+import Model.GameState;
 import Model.User;
 
 import java.sql.*;
@@ -38,6 +39,22 @@ public class DatabaseManager {
     public void disconnectDatabase() {
         try {
             connection.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void writeGameStatistic(GameState g){
+        try {
+            state = connection.createStatement();
+            String values = "'" + g.getUserId1() + "'";
+            values += "," + "'" + g.getUserId2() + "'";
+            values += "," + "'" + g.getWinner() + "'";
+            values += "," + "'" + g.getStartTime() + "'";
+            values += "," + "'" + g.getEndTime() + "'";
+            String query = "INSERT INTO gameshistory VALUES(" + values + ")";
+            state.executeUpdate(query);
+            
         } catch (SQLException ex) {
             Logger.getLogger(DatabaseManager.class.getName()).log(Level.SEVERE, null, ex);
         }

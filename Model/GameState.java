@@ -6,6 +6,9 @@
 package Model;
 
 import java.io.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 
 public class GameState implements Serializable{
@@ -14,10 +17,14 @@ public class GameState implements Serializable{
     private boolean player1Turn = true;
     private String userID1 , userID2;
     private boolean enable = false;
+    private String startTime = null;
+    private String winner = null;
+    private String endTime = null;
     
     public GameState(String u1 , String u2){
         userID1 = u1;
         userID2 = u2;
+        startTime = getCurTime();
     }
 
     public String getOtherUser(String user){
@@ -105,5 +112,29 @@ public class GameState implements Serializable{
     public boolean canPlay(){
         return enable;
     }
+    public String getStartTime(){
+        return startTime;
+    }
+    public String getWinner(){
+        return winner;
+    }
+    public void setWinner(String w){
+        winner = w;
+    }
+    public void setEndTime(){
+        endTime = getCurTime();
+    }
+    public String getEndTime(){
+        return endTime;
+    }
+    public void disabledGame(){
+        enable = false;
+    }
+    
+    private String getCurTime(){
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        return dateFormat.format(Calendar.getInstance().getTime());
+    }
+    
     
 }

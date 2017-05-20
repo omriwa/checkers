@@ -76,6 +76,7 @@ public class MainPanel extends JPanel implements Serializable {
     public void setGamePanel() {
         formPanel.setVisible(false);
         gamePanel.setVisible(true);
+        ouPanel.setVisible(true);
         this.invalidate();
         this.validate();
         this.repaint();
@@ -84,6 +85,7 @@ public class MainPanel extends JPanel implements Serializable {
     public void setFormPanel() {
         formPanel.setVisible(true);
         gamePanel.setVisible(false);
+        ouPanel.setVisible(false);
         this.invalidate();
         this.validate();
         this.repaint();

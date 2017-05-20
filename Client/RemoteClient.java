@@ -7,7 +7,9 @@ package Client;
 
 import java.rmi.RemoteException;
 import Model.GameState;
+import java.awt.Frame;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 
 public class RemoteClient implements IRemoteClient {
 
@@ -31,5 +33,13 @@ public class RemoteClient implements IRemoteClient {
     @Override
     public boolean isAlive() {
         return connected;
+    }
+
+    @Override
+    /*disconnect the player from game , by disabling the game movement , and announce
+    him about the disconnected opponent*/
+    public void diconnect(String m) throws RemoteException {
+        Client.getClient().getGameState().disabledGame();//stop the game
+        JOptionPane.showMessageDialog(new Frame(),m);
     }
 }
