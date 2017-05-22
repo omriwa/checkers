@@ -5,6 +5,8 @@
  */
 package Client;
 
+import static Client.Client.getClient;
+import Model.GameInvitation;
 import java.rmi.RemoteException;
 import Model.GameState;
 import java.awt.Frame;
@@ -42,4 +44,10 @@ public class RemoteClient implements IRemoteClient {
         Client.getClient().getGameState().disabledGame();//stop the game
         JOptionPane.showMessageDialog(new Frame(),m);
     }
+    
+    @Override
+    public GameInvitation receiveGameInvitation(GameInvitation invitation){
+        return Client.getClient().receiveInvitation(invitation);
+    }
+
 }

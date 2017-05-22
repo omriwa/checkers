@@ -5,6 +5,7 @@ package Client;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+import Model.GameInvitation;
 import Model.GameState;
 import java.io.Serializable;
 import java.rmi.Remote;
@@ -24,4 +25,6 @@ public interface IRemoteClient extends Remote, Serializable {
     public void disconnect() throws RemoteException;
     
     public void diconnect(String m) throws RemoteException;
+    
+    public GameInvitation receiveGameInvitation(GameInvitation i) throws RemoteException;
 }

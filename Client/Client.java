@@ -12,6 +12,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import CheckerServer.IRemoteServer;
 import Database.UserConfiguration;
+import Model.GameInvitation;
 import View.GamePanel;
 import View.MyButton;
 import View.OnlineUsersPanel;
@@ -22,6 +23,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 
 public class Client implements Serializable{
@@ -46,6 +48,10 @@ public class Client implements Serializable{
     
     public static Client getClient(){
         return client;
+    }
+    
+    public User getUser(){
+        return user;
     }
     
     private void intialize(String host , String objName){
@@ -138,7 +144,7 @@ public class Client implements Serializable{
     public void sendGameState(MyButton [][] board){
         gameState.setState(board);
         try {
-            remoteServer.sendGameState(gameState);
+            remoteServer.changeGameTurn(gameState);
         } catch (RemoteException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -152,8 +158,25 @@ public class Client implements Serializable{
         }
     }
 
-    public void startGame() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void sendInvitation(String opponentId){
+        GameInvitation invitation = new GameInvitation(user.getUsername(), opponentId);
+        try {
+            remoteServer.sendInvitation(invitation);
+        } catch (RemoteException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public GameInvitation receiveInvitation(GameInvitation invitation){
+        int dialogButton = JOptionPane.YES_NO_OPTION;
+        JOptionPane.showConfirmDialog (null, "Would you like to play with " + invitation.getUserId1(),"Info",dialogButton);
+        if(dialogButton == JOptionPane.YES_OPTION)
+            invitation.setAccept(true);
+        return invitation;
+    }
+
+    public void writeStatistics(GameState gamestate) {
+        remoteServer.writeSatistics(gamestate);
     }
   
 }

@@ -3,10 +3,10 @@ package CheckerServer;
 import Database.DatabaseManager;
 import java.rmi.RemoteException;
 import java.util.HashMap;
-import Model.User;
 import Model.GameState;
 import Model.User;
 import Client.IRemoteClient;
+import Model.GameInvitation;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
@@ -50,7 +50,6 @@ public class CheckersServer {
             if (!onlineClients.containsKey(user.getUsername())) {//user isnt exists
                 user.setBridge(b);
                 onlineClients.put(user.getUsername(), b);
-                StartGame(new GameState(username, username));
             }
         }
         return user;
@@ -111,14 +110,6 @@ public class CheckersServer {
         return databaseManager;
     }
 
-    private void intializeGameState(String uId1, String uId2) {
-        GameState gameState = new GameState(uId1, uId2);
-        games.put(uId1, gameState);
-        games.put(uId2, gameState);
-        //send to users
-        this.sendGameState(gameState);
-    }
-
     /*return the the user details from database and creating a user*/
     public User getUser(String username, String password) {
         return databaseManager.getUserFromDB(username, password);
@@ -139,22 +130,14 @@ public class CheckersServer {
             }
         }
     }
-
-    public void updateGameState(GameState gameState) throws RemoteException {
-        /*update data structure*/
-        games.put(gameState.getUserId1(), gameState);
-        games.put(gameState.getUserId2(), gameState);
-        sendGameState(gameState);//send game state to users
-
+    
+    public void writeStatistics(GameState g){
+        databaseManager.writeGameStatistic(g);
     }
 
     public void changeGameTurn(GameState gameState) {
         gameState.changeTurn();
-        try {
-            updateGameState(gameState);
-        } catch (RemoteException ex) {
-            Logger.getLogger(CheckersServer.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        sendGameState(gameState);
     }
 
     public void StartGame(GameState gameState) {
@@ -185,6 +168,18 @@ public class CheckersServer {
         }
         uName.remove(curUser);
         return uName;
+    }
+
+    public void sendInvitation(GameInvitation invitation) {
+        IRemoteClient client = onlineClients.get(invitation.getUserId2());
+        try {
+            if(client != null && client.isAlive())//the opponent exists and online
+                invitation = client.receiveGameInvitation(invitation);
+                } catch (RemoteException ex) {
+            Logger.getLogger(CheckersServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if(invitation.isAccept())
+            StartGame(new GameState(invitation.getUserId1(), invitation.getUserId2()));
     }
 
     /*for manging the clients*/

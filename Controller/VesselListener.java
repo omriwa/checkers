@@ -10,7 +10,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import javax.swing.Timer;
 import Model.GameState;
+import Model.P1WonEvent;
 import View.GameFrame;
+import java.awt.Frame;
+import javax.swing.JOptionPane;
 
 public class VesselListener implements ActionListener, Serializable {
 
@@ -22,11 +25,14 @@ public class VesselListener implements ActionListener, Serializable {
     private Timer playTime = new Timer(3000, this);
     private boolean playerFinishMov = false;
     private GameState gamestate = null;
+    private boolean player1 = true;
 
     public VesselListener(MyButton[][] b) {
         board = b;
         judge = new Judge(board, true);
         gamestate = Client.Client.getClient().getGameState();
+        if(!gamestate.isPlayer1Turn())
+            player1 = false;
         posList = new ArrayList<>();
     }
 
@@ -175,8 +181,25 @@ public class VesselListener implements ActionListener, Serializable {
     /*receive event of the player that won and show message to user*/
     public void playerWonHandler(PlayerWonEvent e) {
         if (e != null) {
-            Client.Client.getClient().startGame();
+            gamestate.disabledGame();
+            String msg = "Player ";
+            if (e instanceof P1WonEvent) {//player 1 won
+                msg += "one won";
+                gamestate.setWinner(gamestate.getUserId1());
+            } else {//player 2 won
+                msg += "two won";
+                gamestate.setWinner(gamestate.getUserId2());
+            }
+            JOptionPane.showMessageDialog(new Frame(), msg);
+            writeStatistic(e);
         }
 
+    }
+    
+    private void writeStatistic(PlayerWonEvent e){
+        if(e instanceof P1WonEvent && player1)
+            Client.Client.getClient().writeStatistics(gamestate);
+        else
+           Client.Client.getClient().writeStatistics(gamestate); 
     }
 }

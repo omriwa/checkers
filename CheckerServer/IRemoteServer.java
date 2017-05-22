@@ -2,6 +2,7 @@ package CheckerServer;
 
 import Model.User;
 import Client.IRemoteClient;
+import Model.GameInvitation;
 import Model.GameState;
 import Model.User;
 import java.io.Serializable;
@@ -19,8 +20,12 @@ public interface IRemoteServer extends Remote, Serializable {
 
     public User getUser(String username, String password) throws RemoteException;
 
-    public void sendGameState(GameState gameState) throws RemoteException;
+    public void changeGameTurn(GameState gameState) throws RemoteException;
 
     public void changeTurn(GameState gameState) throws RemoteException;
+
+    public void sendInvitation(GameInvitation invitation) throws RemoteException;
+
+    public void writeSatistics(GameState gamestate) throws RemoteException;
 
 }

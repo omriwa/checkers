@@ -7,6 +7,7 @@ package CheckerServer;
 
 import Model.User;
 import Client.IRemoteClient;
+import Model.GameInvitation;
 import Model.GameState;
 import Model.User;
 import java.rmi.RemoteException;
@@ -36,16 +37,22 @@ public class RemoteServer implements IRemoteServer {
     }
 
     @Override
-    public void sendGameState(GameState gameState) {
-        try {
-            CheckersServer.getServer().updateGameState(gameState);
-        } catch (RemoteException ex) {
-//            Logger.getLogger(RemoteServer.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public void changeGameTurn(GameState gameState) {
+        CheckersServer.getServer().changeGameTurn(gameState);
     }
 
     public void changeTurn(GameState gameState) {
         CheckersServer.getServer().changeGameTurn(gameState);
+    }
+
+    @Override
+    public void sendInvitation(GameInvitation invitation) throws RemoteException {
+        CheckersServer.getServer().sendInvitation(invitation);
+    }
+
+    @Override
+    public void writeSatistics(GameState gamestate) throws RemoteException {
+        CheckersServer.getServer().writeStatistics(gamestate);
     }
 
 }
