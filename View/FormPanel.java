@@ -6,6 +6,7 @@
 package View;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
@@ -23,13 +24,14 @@ public class FormPanel extends JPanel implements Serializable {
     protected JPanel centerPanel;
     protected JButton registerBtn, sendFormBtn, directoryBtn;
     protected JFileChooser directoryChoser;
-    protected JComboBox colors;
+    protected JComboBox<String> colors;
     protected String path = null;
-    private final String[] colorOptions = {"Black", "White", "Blue", "Red"};
+    private final String[] colorOptions = {"Black","Green","Yellow","Blue"};
+    private FormPanel formPanel = this;
 
     public FormPanel() {
         this.setLayout(new BorderLayout());
-        colors = new JComboBox(colorOptions);
+        colors = new JComboBox<String>(colorOptions);
         directoryChoser = new JFileChooser();
         directoryBtn = new JButton("choose directory");
         headline = new JLabel("Please Login");
@@ -58,14 +60,7 @@ public class FormPanel extends JPanel implements Serializable {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            String userInfo = "choose you directory, make a xml file and choose it";
-            JFrame f = new JFrame();
-            JDialog dialog = new JDialog
-        (f, "directory choosing info" , true);
-            JLabel info = new JLabel(userInfo);
-            dialog.add(info);
-            dialog.setSize(400, 100);
-            dialog.setVisible(true);
+            JOptionPane.showMessageDialog(formPanel,"choose a directory, make a xml file and choose it");
             JFileChooser fileChooser = new JFileChooser();
             int result = fileChooser.showOpenDialog(fileChooser);
             if (result == JFileChooser.APPROVE_OPTION) {
@@ -113,9 +108,8 @@ public class FormPanel extends JPanel implements Serializable {
     }
     
     public User getUserInfo(){
-        if(usernameTxt.getText().length() > 0 && passwordTxt.getText().length() > 0 
-            && path != null){
-            String color = colors.getSelectedItem().toString();
+        if(usernameTxt.getText().length() > 0 && passwordTxt.getText().length() > 0 && path != null){
+            Color color = User.converStringToColor(colors.getSelectedItem().toString()); 
             return new User(getUsername(), path , color);
         }
         else

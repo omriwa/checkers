@@ -16,14 +16,14 @@ public class User implements Serializable {
     private String username;
     private String configPath;
     private IRemoteClient bridge;
-    private String color;
+    private Color color;
 
     public User() {
         bridge = (IRemoteClient) new RemoteClient();
 
     }
 
-    public User(String username, String configPath, String color) {
+    public User(String username, String configPath, Color color) {
         this();
         this.username = username;
         this.configPath = configPath;
@@ -38,11 +38,11 @@ public class User implements Serializable {
         this.configPath = configPath;
     }
 
-    public String getColor() {
+    public Color getColor() {
         return color;
     }
 
-    public void setColor(String color) {
+    public void setColor(Color color) {
         this.color = color;
     }
 
@@ -62,4 +62,15 @@ public class User implements Serializable {
         bridge = b;
     }
 
+    public static Color converStringToColor(String str){
+    	if(str.equals("Yellow"))
+    		return Color.yellow;
+    	else if (str.equals("Blue"))
+    		return Color.blue;
+    	else if(str.equals("Green"))
+    		return Color.green;
+    	else
+    		return Color.black;
+    		
+    }
 }

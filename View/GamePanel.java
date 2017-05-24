@@ -100,6 +100,10 @@ public class GamePanel extends JPanel {
     public MyButton[][] getBoard() {
         return board;
     }
+    
+    public VesselListener getListener(){
+        return listener;
+    }
 
     public static void main(String[] args) {
         JFrame f = new JFrame();
@@ -109,15 +113,8 @@ public class GamePanel extends JPanel {
     }
 
     //sets new color for the board
-    public void setPreferredColor(String c) {
-        Color color;
-        try {
-            Field field = Class.forName("java.awt.Color").getField(c);
-            color = (Color) field.get(null);
-        } catch (Exception e) {
-            color = Color.BLACK; // Not defined
-        }
-        usersColor = color;
+    public void setPreferredColor(Color c) {
+        usersColor = c;
     }
 
 }

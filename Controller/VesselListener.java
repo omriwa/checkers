@@ -30,9 +30,6 @@ public class VesselListener implements ActionListener, Serializable {
     public VesselListener(MyButton[][] b) {
         board = b;
         judge = new Judge(board, true);
-        gamestate = Client.Client.getClient().getGameState();
-        if(!gamestate.isPlayer1Turn())
-            player1 = false;
         posList = new ArrayList<>();
     }
 
@@ -194,6 +191,10 @@ public class VesselListener implements ActionListener, Serializable {
             writeStatistic(e);
         }
 
+    }
+    
+    public void setPlayer1(boolean isPlayer1){
+        player1 = isPlayer1;
     }
     
     private void writeStatistic(PlayerWonEvent e){

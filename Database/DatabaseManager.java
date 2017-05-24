@@ -86,9 +86,7 @@ public class DatabaseManager {
             String sql = "SELECT username, configPath FROM users WHERE username = " + "\"" + uname + "\"" + " AND password = " + "\"" + pass + "\"";
             ResultSet rs = state.executeQuery(sql);
             rs.next();
-
-            res = new User(rs.getString("username"), rs.getString("configPath"), "game_dir");//need to fixs
-
+            res = new User(rs.getString("username"), rs.getString("configPath"), User.converStringToColor("Black"));//need to fix
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -122,8 +120,12 @@ public class DatabaseManager {
             //if its the 1st registration, than create the "users" & "gameHistory" tables in DB
             DatabaseMetaData dbmd = (DatabaseMetaData) connection.getMetaData();
             ResultSet regTable = dbmd.getTables(null, null, "users", null);
-            if (!regTable.next()) {
+            ResultSet ghTable = dbmd.getTables(null, null, "gameshistory", null);
+            
+          //create the users table
 
+            if (!regTable.next()) {
+            	
                 String createUsersTableQuery = "CREATE TABLE Users "
                         + "(username VARCHAR(255) not NULL, "
                         + " password VARCHAR(255), "
@@ -132,16 +134,18 @@ public class DatabaseManager {
                         + " lastOnline DATE, "
                         + " PRIMARY KEY ( username ))";
 
-                String createGameHistoryTableQuery = "CREATE TABLE GamesHistory "
+                state = connection.createStatement();
+                state.executeUpdate(createUsersTableQuery);
+            }
+            if(!ghTable.next()){
+            	//create the gameHistory table
+            	String createGameHistoryTableQuery = "CREATE TABLE GamesHistory "
                         + "(player1 VARCHAR(255) not NULL, "
                         + " player2 VARCHAR(255) not NULL, "
                         + " winner VARCHAR(255), "
                         + " start VARCHAR(255), "
                         + " finish VARCHAR(255))";
-
-                //create the users & gameHistory table
-                state = connection.createStatement();
-                state.executeUpdate(createUsersTableQuery);
+                          
                 state = connection.createStatement();
                 state.executeUpdate(createGameHistoryTableQuery);
             }

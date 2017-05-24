@@ -131,6 +131,10 @@ public class Client implements Serializable{
     
     public void setGameState(GameState gameState){
         this.gameState = gameState;//need to refresh the gui
+        if(!this.gameState.isPlayer1Turn())
+            GamePanel.getGamePlayPanel().getListener().setPlayer1(false);
+        else
+            GamePanel.getGamePlayPanel().getListener().setPlayer1(true);
     }
     
     public GameState getGameState(){
@@ -176,7 +180,11 @@ public class Client implements Serializable{
     }
 
     public void writeStatistics(GameState gamestate) {
-        remoteServer.writeSatistics(gamestate);
+        try {
+            remoteServer.writeSatistics(gamestate);
+        } catch (RemoteException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
   
 }
