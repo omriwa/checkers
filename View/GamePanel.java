@@ -115,6 +115,7 @@ public class GamePanel extends JPanel {
     //sets new color for the board
     public void setPreferredColor(Color c) {
         usersColor = c;
+        buttonSetUp();
     }
 
 }

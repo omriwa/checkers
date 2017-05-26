@@ -69,7 +69,7 @@ public class User implements Serializable {
     		return Color.blue;
     	else if(str.equals("Green"))
     		return Color.green;
-    	else
+    	else 
     		return Color.black;
     		
     }

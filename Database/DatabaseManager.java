@@ -1,16 +1,15 @@
 package Database;
 
 import Model.GameState;
-import Model.User;
 
 import java.sql.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import Model.User;
+import java.awt.Color;
 
 public class DatabaseManager {
 
@@ -60,33 +59,14 @@ public class DatabaseManager {
         }
     }
 
-    public void addGameInfo() {
-        try {
-            state = connection.createStatement();
-            String values = "'";
-            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-            values += dateFormat.format(Calendar.getInstance().getTime());
-            values += "'";
-            System.out.println(values);
-            String query = "INSERT INTO games_log VALUES(" + values + ")";
-            state.executeUpdate(query);
-            gameNum++;
-        } catch (SQLException ex) {
-            System.out.println("can't add data to database");
-            System.out.println(ex);
-            return;
-        }
-        System.out.println("add info seccessfuly");
-    }
-
     public User getUserFromDB(String uname, String pass) {
         User res = null;
         try {
             state = connection.createStatement();
-            String sql = "SELECT username, configPath FROM users WHERE username = " + "\"" + uname + "\"" + " AND password = " + "\"" + pass + "\"";
+            String sql = "SELECT username, configPath, color FROM users WHERE username = " + "\"" + uname + "\"" + " AND password = " + "\"" + pass + "\"";
             ResultSet rs = state.executeQuery(sql);
             rs.next();
-            res = new User(rs.getString("username"), rs.getString("configPath"), User.converStringToColor("Black"));//need to fix
+            res = new User(rs.getString("username"), rs.getString("configPath"),this.convertStringToColor(rs.getString("color")));//need to fix
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -104,7 +84,7 @@ public class DatabaseManager {
                 Date date = new Date();
                 dateStr = (dateFormat.format(date));
                 query = "INSERT INTO users VALUES(" + "'" + u.getUsername() + "'"
-                        + "," + "'" + pass + "'" + "," + "'" +  u.getColor()
+                        + "," + "'" + pass + "'" + "," + "'" +  u.getColor().getRGB()
                          + "'" + "," + "'" + u.getConfigPath() + "'" + "," + "'" + dateStr + "'" + ")";
                 state.execute(query);
                 return true;
@@ -120,7 +100,7 @@ public class DatabaseManager {
             //if its the 1st registration, than create the "users" & "gameHistory" tables in DB
             DatabaseMetaData dbmd = (DatabaseMetaData) connection.getMetaData();
             ResultSet regTable = dbmd.getTables(null, null, "users", null);
-            ResultSet ghTable = dbmd.getTables(null, null, "gameshistory", null);
+            ResultSet ghTable = dbmd.getTables(null, null, "games_history", null);
             
           //create the users table
 
@@ -139,7 +119,7 @@ public class DatabaseManager {
             }
             if(!ghTable.next()){
             	//create the gameHistory table
-            	String createGameHistoryTableQuery = "CREATE TABLE GamesHistory "
+            	String createGameHistoryTableQuery = "CREATE TABLE games_history "
                         + "(player1 VARCHAR(255) not NULL, "
                         + " player2 VARCHAR(255) not NULL, "
                         + " winner VARCHAR(255), "
@@ -170,10 +150,14 @@ public class DatabaseManager {
         }
         return true;//in a case it will not create user
     }
+    
+    private Color convertStringToColor(String c){
+        int intColor = Integer.parseInt(c);
+        return new Color(intColor);
+    }
 
     public static void main(String[] argv) {
         DatabaseManager databaseManager = new DatabaseManager();
-        databaseManager.addGameInfo();
         databaseManager.disconnectDatabase();
     }
 
