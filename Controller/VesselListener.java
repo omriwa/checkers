@@ -35,7 +35,7 @@ public class VesselListener implements ActionListener, Serializable {
 
     public void actionPerformed(ActionEvent e) {
         gamestate = Client.Client.getClient().getGameState();
-        if (gamestate.canPlay()) {
+        if (gamestate != null && gamestate.canPlay()) {
             if (playTime.equals(e.getSource())) {//timer is finished
                 playerFinishMov = true;
                 playTime.stop();//stop the timer

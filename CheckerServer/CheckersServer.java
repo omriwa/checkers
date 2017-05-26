@@ -91,9 +91,7 @@ public class CheckersServer {
 
     public User register(User userInfo, String pass, IRemoteClient b) {
         if (databaseManager.registerUser(userInfo, pass)) {
-            //add to hash
-            return connect(userInfo.getUsername(), pass, b);
-
+            return userInfo;
         }
         return null;
     }

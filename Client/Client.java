@@ -11,11 +11,8 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import CheckerServer.IRemoteServer;
-import Database.UserConfiguration;
 import Model.GameInvitation;
-import View.GamePanel;
-import View.MyButton;
-import View.OnlineUsersPanel;
+import View.*;
 
 
 import java.io.Serializable;
@@ -75,8 +72,9 @@ public class Client implements Serializable{
         try {
             user =  remoteServer.registerInServer(user , pass , remoteClient);
             if (user!=null) {
-                UserConfiguration.loadUserConfig(user);
-                initializeUser();
+//                UserConfiguration.loadUserConfig(user);
+//                initializeUser();
+                return user;
             }
             else
                 return  null;
@@ -92,9 +90,8 @@ public class Client implements Serializable{
             if (user != null){
             	this.user = user;
             	 //set the preferred color 
-                GamePanel gp = GamePanel.getGamePlayPanel();
-                gp.setPreferredColor(user.getColor());
-                
+                 System.out.println(user.getColor());
+                MyMenu.getMenuPanel().setBackground(user.getColor());
                //xml loading user conf set to user
                 if(gameState != null)
                     System.out.println("game state");

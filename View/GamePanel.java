@@ -25,7 +25,7 @@ public class GamePanel extends JPanel {
     private MyButton[][] board;//matrix of buttons
     private static GamePanel gamePanel = null;
     private final int ROW = 10, COL = 10;
-    private Color usersColor = Color.BLACK;//black is default color - the user may set preferred color
+    private Color userColor = Color.BLACK;//black is default color - the user may set preferred color
 
     private GamePanel() {
 
@@ -65,7 +65,7 @@ public class GamePanel extends JPanel {
                 if ((i + j) % 2 == 0) {
                     board[i][j].setBackground(Color.white);
                 } else {
-                    board[i][j].setBackground(usersColor);
+                    board[i][j].setBackground(userColor);
                 }
             }
 
@@ -111,11 +111,4 @@ public class GamePanel extends JPanel {
         f.setSize(500, 500);
         f.add(new GamePanel());
     }
-
-    //sets new color for the board
-    public void setPreferredColor(Color c) {
-        usersColor = c;
-        buttonSetUp();
-    }
-
 }
