@@ -63,10 +63,10 @@ public class DatabaseManager {
         User res = null;
         try {
             state = connection.createStatement();
-            String sql = "SELECT username, configPath, color FROM users WHERE username = " + "\"" + uname + "\"" + " AND password = " + "\"" + pass + "\"";
+            String sql = "SELECT username, configPath FROM users WHERE username = " + "\"" + uname + "\"" + " AND password = " + "\"" + pass + "\"";
             ResultSet rs = state.executeQuery(sql);
             rs.next();
-            res = new User(rs.getString("username"), rs.getString("configPath"),this.convertStringToColor(rs.getString("color")));//need to fix
+            res = new User(rs.getString("username"), rs.getString("configPath"));//need to fix
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -82,10 +82,10 @@ public class DatabaseManager {
                 String query, dateStr;
                 DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                 Date date = new Date();
+                String path = u.getConfigPath().replace("\\", "\\\\");
                 dateStr = (dateFormat.format(date));
                 query = "INSERT INTO users VALUES(" + "'" + u.getUsername() + "'"
-                        + "," + "'" + pass + "'" + "," + "'" +  u.getColor().getRGB()
-                         + "'" + "," + "'" + u.getConfigPath() + "'" + "," + "'" + dateStr + "'" + ")";
+                        + "," + "'" + pass + "'" + "," + "'" + path + "'" + "," + "'" + dateStr + "'" + ")";
                 state.execute(query);
                 return true;
             }
@@ -109,7 +109,6 @@ public class DatabaseManager {
                 String createUsersTableQuery = "CREATE TABLE Users "
                         + "(username VARCHAR(255) not NULL, "
                         + " password VARCHAR(255), "
-                        + " color VARCHAR(255), "
                         + " configPath VARCHAR(255), "
                         + " lastOnline DATE, "
                         + " PRIMARY KEY ( username ))";

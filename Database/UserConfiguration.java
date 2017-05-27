@@ -1,6 +1,7 @@
 package Database;
 
 import Model.User;
+import java.awt.Color;
 
 import java.io.File;
 import javax.xml.parsers.DocumentBuilder;
@@ -46,13 +47,14 @@ public class UserConfiguration {
 
             // color elements
             Element color = doc.createElement(COLOR);
-            color.appendChild(doc.createTextNode(user.getColor().toString()));
+            String strColor = Integer.toString(user.getColor().getRGB());
+            color.appendChild(doc.createTextNode(strColor));
             rootElement.appendChild(color);
 
-            // color elements
-            Element savedGame = doc.createElement(SAVED_GAME_DIR);
-            color.appendChild(doc.createTextNode(user.getSavedGamesDir()));
-            rootElement.appendChild(savedGame);
+//            // color elements
+//            Element savedGame = doc.createElement(SAVED_GAME_DIR);
+//            color.appendChild(doc.createTextNode(user.getSavedGamesDir()));
+//            rootElement.appendChild(savedGame);
 
             //...
 
@@ -98,8 +100,9 @@ public class UserConfiguration {
                 Element eElement = (Element) node;
 
                 user.setUsername(((Element) eElement.getElementsByTagName(USER_NAME).item(0)).getAttribute("id"));
-                user.setColor(java.awt.Color.getColor(eElement.getElementsByTagName(COLOR).item(0).getTextContent()));
-                user.setSavedGamesDir(eElement.getElementsByTagName(SAVED_GAME_DIR).item(0).getTextContent());
+                int color = Integer.parseInt(eElement.getElementsByTagName(COLOR).item(0).getTextContent());
+                Color c = new Color(color);
+                user.setColor(c);
             }
 
         } catch (Exception e) {
@@ -109,15 +112,14 @@ public class UserConfiguration {
 
 
     public static void main(String [] args){
-            User user = new User();
-            user.setSavedGamesDir("gg");
-            user.setColor(java.awt.Color.BLUE);
-            user.setUsername("aa");
-            user.setConfigPath("c:\\Users\\omri\\Desktop\\a.xml");
-            saveUserConfig(user);
-
-            User user2 = new User();
-            user2.setConfigPath("c:\\Users\\omri\\Desktop\\a.xml");
-            loadUserConfig(user2);
+//            User user = new User();
+//            user.setColor(java.awt.Color.BLUE);
+//            user.setUsername("aa");
+//            user.setConfigPath("c:\\Users\\omri\\Desktop\\a.xml");
+//            saveUserConfig(user);
+//
+//            User user2 = new User();
+//            user2.setConfigPath("c:\\Users\\omri\\Desktop\\a.xml");
+//            loadUserConfig(user2);
     }
 }

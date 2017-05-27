@@ -60,11 +60,12 @@ public class FormPanel extends JPanel implements Serializable {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            JOptionPane.showMessageDialog(formPanel,"choose a directory, make a xml file and choose it");
-            JFileChooser fileChooser = new JFileChooser();
-            int result = fileChooser.showOpenDialog(fileChooser);
+            JOptionPane.showMessageDialog(formPanel,"choose a directory,for the xml file");
+            JFileChooser pathChooser = new JFileChooser();
+            pathChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int result = pathChooser.showOpenDialog(pathChooser);
             if (result == JFileChooser.APPROVE_OPTION) {
-               path = fileChooser.getCurrentDirectory().getAbsolutePath();
+               path = pathChooser.getSelectedFile().getAbsolutePath() + "\\config.xml";
             }
             System.out.println(path);
         }

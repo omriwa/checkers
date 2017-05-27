@@ -18,7 +18,6 @@ public class RemoteServer implements IRemoteServer {
     @Override
     public User connectToServer(String username, String password, IRemoteClient b) throws RemoteException {
         return CheckersServer.getServer().connect(username, password, b);
-
     }
 
     @Override

@@ -48,7 +48,6 @@ public class CheckersServer {
         User user;
         if ((user = databaseManager.getUserFromDB(username, password)) != null) {
             if (!onlineClients.containsKey(user.getUsername())) {//user isnt exists
-                user.setBridge(b);
                 onlineClients.put(user.getUsername(), b);
             }
         }

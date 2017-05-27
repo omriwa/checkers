@@ -11,6 +11,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import CheckerServer.IRemoteServer;
+import Database.UserConfiguration;
 import Model.GameInvitation;
 import View.*;
 
@@ -76,31 +77,27 @@ public class Client implements Serializable{
 
     }
 
-    public User onRegister(User user , String pass){
+    public boolean onRegister(User user , String pass){
         try {
             user =  remoteServer.registerInServer(user , pass , remoteClient);
             if (user!=null) {
-//                UserConfiguration.loadUserConfig(user);
-//                initializeUser();
-                return user;
+                UserConfiguration.saveUserConfig(user);
+                return true;
             }
             else
-                return  null;
+                return false;
         } catch (RemoteException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return  null;
+        return false;
     }
     
     public boolean onLogOn(String username, String pass){
         try {
             User user = remoteServer.connectToServer(username, pass , remoteClient);
-            if (user != null){
-            	this.user = user;
+            if (user  != null){
+                UserConfiguration.loadUserConfig(user);
                 MyMenu.getMenuPanel().setBackground(user.getColor());
-               //xml loading user conf set to user
-                if(gameState != null)
-                    System.out.println("game state");
                 return true;
             } else {
                 //dialog doesn't exist
@@ -117,6 +114,10 @@ public class Client implements Serializable{
             ex.printStackTrace();
         }
         return false;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
     
     public void onDisconnect(){

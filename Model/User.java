@@ -15,18 +15,15 @@ public class User implements Serializable {
 
     private String username;
     private String configPath;
-    private IRemoteClient bridge;
     private Color color;
-
-    public User() {
-        bridge = (IRemoteClient) new RemoteClient();
-
+    
+    public User(String username, String configPath) {
+        this.username = username;
+        this.configPath = configPath;
     }
 
     public User(String username, String configPath, Color color) {
-        this();
-        this.username = username;
-        this.configPath = configPath;
+        this(username , configPath);
         this.color = color;
     }
 
@@ -50,16 +47,8 @@ public class User implements Serializable {
         return username;
     }
 
-    public IRemoteClient getBridge() {
-        return bridge;
-    }
-
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public void setBridge(IRemoteClient b) {
-        bridge = b;
     }
 
     public static Color converStringToColor(String str){

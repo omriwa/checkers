@@ -114,7 +114,7 @@ public class MainPanel extends JPanel implements Serializable {
                 User userInfo = formPanel.getUserInfo();
                 System.out.println(formPanel.getUsername());
                 if (userInfo != null) {
-                    if (Client.Client.getClient().onRegister(userInfo, password) != null) {
+                    if (Client.Client.getClient().onRegister(userInfo, password)) {
                         System.out.println("user registered");
                         formPanel.fireLoginEvent();
                     } else {

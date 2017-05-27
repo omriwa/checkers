@@ -5,7 +5,6 @@
  */
 package Client;
 
-import static Client.Client.getClient;
 import Model.GameInvitation;
 import java.rmi.RemoteException;
 import Model.GameState;
@@ -53,5 +52,4 @@ public class RemoteClient implements IRemoteClient {
     public GameInvitation receiveGameInvitation(GameInvitation invitation){
         return Client.getClient().receiveInvitation(invitation);
     }
-
 }

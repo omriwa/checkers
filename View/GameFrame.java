@@ -31,8 +31,6 @@ public class GameFrame extends JFrame implements Serializable{
         this.setVisible(true);
         this.setResizable(false);
         this.addWindowListener(new Listener());
-//        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
     }
     
     public static GameFrame getGameFrame(){
