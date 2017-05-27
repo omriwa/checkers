@@ -7,8 +7,6 @@
 
 import Client.Client;
 import View.GameFrame;
-import View.MainPanel;
-import java.awt.Color;
 
 /**
  *

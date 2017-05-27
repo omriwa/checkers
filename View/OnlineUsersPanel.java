@@ -7,12 +7,16 @@ package View;
 
 import Model.User;
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 /**
  *
@@ -44,34 +48,61 @@ public class OnlineUsersPanel extends JPanel {
 
     /*get the online users from the server*/
     public void setOnlineUsers(ArrayList<String> onlineUsers) {
-        usersName.clear();
-            for (String uName : onlineUsers) {
-                usersName.add(uName);
-            }
+        System.out.println(onlineUsers.get(0));
+        usersName = onlineUsers;
         onlineUsersList = new JList(usersName.toArray());
-        listScroller = new JScrollPane(onlineUsersList);
+        onlineUsersList.addListSelectionListener(new Listener());
         this.remove(listScroller);
+        listScroller = new JScrollPane(onlineUsersList);
         this.add(listScroller, BorderLayout.CENTER);
-        repaint();
+        this.refreshPanel();
+        GamePanel.getGamePlayPanel().invalidate();
+        GamePanel.getGamePlayPanel().validate();
         //fix that the new users will appear, use usersName
     }
 
     public void removeUser(User user) {
         usersName.remove(user.getUsername());
-        this.invalidate();
-        this.validate();
-        this.repaint();
+        this.refreshPanel();
     }
 
     public ArrayList<String> getOnlineUsersName() {
         return usersName;
     }
 
+    private void refreshPanel() {
+        this.invalidate();
+        this.validate();
+    }
+
+    private class Listener implements ListSelectionListener {
+
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            if (!e.getValueIsAdjusting()) {//This line prevents double events
+                String opponent = onlineUsersList.getSelectedValue().toString();
+                if(!opponent.isEmpty())//choosed an opponent
+                    Client.Client.getClient().sendInvitation(opponent);
+            }
+
+        }
+
+    }
+
     public static void main(String[] args) {
         JFrame f = new JFrame();
         f.setVisible(true);
         f.setSize(300, 300);
-        f.add(new OnlineUsersPanel());
+        OnlineUsersPanel p = new OnlineUsersPanel();
+        f.add(p);
+        f.invalidate();
+        f.validate();
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        ArrayList<String> arr = new ArrayList<>();
+        arr.add("aaa");
+        arr.add("bbb");
+        arr.add("ccc");
+        p.setOnlineUsers(arr);
     }
 
 }

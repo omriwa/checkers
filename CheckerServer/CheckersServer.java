@@ -59,7 +59,7 @@ public class CheckersServer {
         databaseManager.createTables();
     }
 
-    private void clientDisconnected(String user) {
+    private synchronized void clientDisconnected(String user) {
         try {
             onlineClients.get(user).disconnect();
             onlineClients.remove(user);
@@ -119,7 +119,7 @@ public class CheckersServer {
     }
 
     /*update online users lists in users panel*/
-    public void updateUsersListInGui() {
+    public  synchronized void updateUsersListInGui() {
         for (String client : onlineClients.keySet()) {
             try {
                 onlineClients.get(client).updateOnlineUsersList(getUsersName(client));
@@ -189,7 +189,7 @@ public class CheckersServer {
                 checkDisconnectedUsers();
                 sendOnlineUserList();
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(3000);
                 } catch (Exception e) {
                 }
             }
