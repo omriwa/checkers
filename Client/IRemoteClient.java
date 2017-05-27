@@ -29,4 +29,5 @@ public interface IRemoteClient extends Remote, Serializable {
     public GameInvitation receiveGameInvitation(GameInvitation i) throws RemoteException;
 
     public void setAlive() throws RemoteException;
+    
 }

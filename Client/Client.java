@@ -66,7 +66,7 @@ public class Client implements Serializable{
                 remoteServer = (IRemoteServer) registry.lookup(objName);
                 remoteClient = (IRemoteClient) UnicastRemoteObject.exportObject(new RemoteClient(), 0);
             } catch (Exception e) {
-                System.out.println("error");//fix
+                e.printStackTrace();
             }
         
         System.out.println("Client intialzed");  

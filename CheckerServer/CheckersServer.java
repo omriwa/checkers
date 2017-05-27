@@ -203,6 +203,7 @@ public class CheckersServer {
                         clientDisconnected(client); 
                     }
                 } catch (Exception e) {
+                    e.printStackTrace();
                     System.out.println("cant disconnect user");
                 }
             }
