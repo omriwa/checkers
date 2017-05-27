@@ -36,6 +36,10 @@ public class RemoteClient implements IRemoteClient {
     public boolean isAlive() {
         return connected;
     }
+    
+    public void setAlive(){
+        connected = true;
+    }
 
     @Override
     /*disconnect the player from game , by disabling the game movement , and announce

@@ -6,9 +6,10 @@
 package View;
 
 import Controller.Judge;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.Serializable;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 /**
  *
@@ -30,6 +31,7 @@ public class GameFrame extends JFrame implements Serializable{
         this.setJMenuBar(MyMenu.getMenuPanel(this));
         this.setVisible(true);
         this.setResizable(false);
+        this.addWindowListener(new Listener());
     }
     
     public static GameFrame getGameFrame(){
@@ -41,6 +43,13 @@ public class GameFrame extends JFrame implements Serializable{
     
     public MainPanel getMainPanel(){
         return mainPanel;
+    }
+    
+    private class Listener extends WindowAdapter {
+            public void windowClosing(WindowEvent e)
+            {
+                Client.Client.getClient().onDisconnect();
+            }
     }
   
     

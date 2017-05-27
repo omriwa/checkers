@@ -81,7 +81,7 @@ public class MainPanel extends JPanel implements Serializable {
         this.validate();
         this.repaint();
     }
-    
+
     public void setFormPanel() {
         formPanel.setVisible(true);
         gamePanel.setVisible(false);
@@ -100,7 +100,7 @@ public class MainPanel extends JPanel implements Serializable {
                     password = formPanel.getPassword();
 
             if (btn.equalsIgnoreCase("Login")) {
-
+                Client.Client.getClient().setConnectionAlive();
                 if (Client.Client.getClient().onLogOn(username, password)) {
                     System.out.println("user connected");
                     cardLayout.show(centerPanel, "gamePanel");
@@ -114,7 +114,7 @@ public class MainPanel extends JPanel implements Serializable {
                 User userInfo = formPanel.getUserInfo();
                 System.out.println(formPanel.getUsername());
                 if (userInfo != null) {
-                    if (Client.Client.getClient().onRegister(userInfo , password) != null) {
+                    if (Client.Client.getClient().onRegister(userInfo, password) != null) {
                         System.out.println("user registered");
                         formPanel.fireLoginEvent();
                     } else {

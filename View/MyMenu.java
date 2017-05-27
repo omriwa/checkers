@@ -9,6 +9,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import CheckerServer.IRemoteServer;
+import java.awt.Color;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -49,6 +50,7 @@ public class MyMenu extends JMenuBar implements Serializable {
         loginItem.addActionListener(listener);
         registerItem.addActionListener(listener);
         intialOptions();
+        this.setBackground(new Color(237, 237, 237));
     }
 
     public static MyMenu getMenuPanel(JFrame f) {
@@ -89,6 +91,7 @@ public class MyMenu extends JMenuBar implements Serializable {
                 mainPanel.setFormPanel();
                 mainPanel.setLoginPanel();
                 MyMenu.getMenuPanel().enableInputItems();
+                MyMenu.getMenuPanel().setBackground(new Color(237, 237, 237));
             }
 
         }

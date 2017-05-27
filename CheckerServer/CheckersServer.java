@@ -63,6 +63,7 @@ public class CheckersServer {
         try {
             onlineClients.get(user).disconnect();
             onlineClients.remove(user);
+            System.out.println(user + " get disconnected successfully");
         } catch (RemoteException ex) {
             Logger.getLogger(CheckersServer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -198,8 +199,8 @@ public class CheckersServer {
         private void checkDisconnectedUsers() {
             for (String client : onlineClients.keySet()) {
                 try {
-                    if (onlineClients.get(client) != null && !onlineClients.get(client).isAlive()) {//disconected user
-                        clientDisconnected(client);
+                    if (onlineClients.get(client) != null && onlineClients.get(client).isAlive() == false) {//disconected user
+                        clientDisconnected(client); 
                     }
                 } catch (Exception e) {
                     System.out.println("cant disconnect user");

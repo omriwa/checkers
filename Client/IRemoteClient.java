@@ -27,4 +27,6 @@ public interface IRemoteClient extends Remote, Serializable {
     public void diconnect(String m) throws RemoteException;
     
     public GameInvitation receiveGameInvitation(GameInvitation i) throws RemoteException;
+
+    public void setAlive() throws RemoteException;
 }

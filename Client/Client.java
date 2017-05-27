@@ -51,6 +51,14 @@ public class Client implements Serializable{
         return user;
     }
     
+    public void setConnectionAlive(){
+        try {
+            remoteClient.setAlive();
+        } catch (RemoteException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     private void intialize(String host , String objName){
         Registry registry;
         try {
@@ -89,8 +97,6 @@ public class Client implements Serializable{
             User user = remoteServer.connectToServer(username, pass , remoteClient);
             if (user != null){
             	this.user = user;
-            	 //set the preferred color 
-                 System.out.println(user.getColor());
                 MyMenu.getMenuPanel().setBackground(user.getColor());
                //xml loading user conf set to user
                 if(gameState != null)
