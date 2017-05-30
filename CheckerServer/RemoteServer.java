@@ -54,4 +54,9 @@ public class RemoteServer implements IRemoteServer {
         CheckersServer.getServer().writeStatistics(gamestate);
     }
 
+    @Override
+    public boolean closeConnection(String userId) {
+        return CheckersServer.getServer().closeConnection(userId);
+    }
+
 }

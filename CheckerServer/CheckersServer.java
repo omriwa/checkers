@@ -179,6 +179,11 @@ public class CheckersServer {
         if(invitation.isAccept())
             StartGame(new GameState(invitation.getUserId1(), invitation.getUserId2()));
     }
+    /*disconnect the user when he close the program (the frame)*/
+    boolean closeConnection(String userId) {
+        clientDisconnected(userId);
+        return true;
+    }
 
     /*for manging the clients*/
     private class ClientManager extends Thread {
@@ -195,7 +200,7 @@ public class CheckersServer {
             }
         }
 
-        private void checkDisconnectedUsers() {
+        private synchronized void checkDisconnectedUsers() {
             for (String client : onlineClients.keySet()) {
                 try {
                     if (onlineClients.get(client) != null && onlineClients.get(client).isAlive() == false) {//disconected user
@@ -209,7 +214,7 @@ public class CheckersServer {
 
         }
         
-        private void sendOnlineUserList(){
+        private synchronized void sendOnlineUserList(){
             ArrayList <String> onlineUsersList = new ArrayList<>(onlineClients.keySet());
             for(String client : onlineClients.keySet()){
                 try {

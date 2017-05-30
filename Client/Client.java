@@ -94,7 +94,7 @@ public class Client implements Serializable{
     
     public boolean onLogOn(String username, String pass){
         try {
-            User user = remoteServer.connectToServer(username, pass , remoteClient);
+            user = remoteServer.connectToServer(username, pass , remoteClient);
             if (user  != null){
                 UserConfiguration.loadUserConfig(user);
                 MyMenu.getMenuPanel().setBackground(user.getColor());
@@ -112,6 +112,17 @@ public class Client implements Serializable{
                 }
         catch (RemoteException ex) {
             ex.printStackTrace();
+        }
+        return false;
+    }
+    
+    public boolean onClose(){
+        if(user == null)//if the user didnt sign in
+            return true;
+        try {
+            return remoteServer.closeConnection(user.getUsername());
+        } catch (RemoteException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
     }

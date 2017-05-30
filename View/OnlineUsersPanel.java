@@ -82,7 +82,8 @@ public class OnlineUsersPanel extends JPanel {
             if (!e.getValueIsAdjusting()) {//This line prevents double events
                 String opponent = onlineUsersList.getSelectedValue().toString();
                 if(!opponent.isEmpty())//choosed an opponent
-                    Client.Client.getClient().sendInvitation(opponent);
+                    if(Client.Client.getClient() != null)
+                        Client.Client.getClient().sendInvitation(opponent);
             }
 
         }
@@ -94,7 +95,9 @@ public class OnlineUsersPanel extends JPanel {
         f.setVisible(true);
         f.setSize(300, 300);
         OnlineUsersPanel p = new OnlineUsersPanel();
-        f.add(p);
+        JPanel panel = new OnlineUsersPanel();
+        panel.add(p);
+        f.add(panel);
         f.invalidate();
         f.validate();
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -102,6 +105,9 @@ public class OnlineUsersPanel extends JPanel {
         arr.add("aaa");
         arr.add("bbb");
         arr.add("ccc");
+        p.setOnlineUsers(arr);
+        arr.clear();
+        arr.add("omri");
         p.setOnlineUsers(arr);
     }
 

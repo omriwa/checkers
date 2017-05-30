@@ -28,4 +28,6 @@ public interface IRemoteServer extends Remote, Serializable {
 
     public void writeSatistics(GameState gamestate) throws RemoteException;
 
+    public boolean closeConnection(String userId) throws RemoteException;
+
 }

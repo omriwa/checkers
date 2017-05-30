@@ -47,7 +47,8 @@ public class GameFrame extends JFrame implements Serializable{
     private class Listener extends WindowAdapter {
             public void windowClosing(WindowEvent e)
             {
-                Client.Client.getClient().onDisconnect();
+                if(Client.Client.getClient().onClose())
+                    GameFrame.getGameFrame().setDefaultCloseOperation(GameFrame.EXIT_ON_CLOSE);
             }
     }
   

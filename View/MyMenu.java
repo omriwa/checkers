@@ -92,6 +92,7 @@ public class MyMenu extends JMenuBar implements Serializable {
                 mainPanel.setLoginPanel();
                 MyMenu.getMenuPanel().enableInputItems();
                 MyMenu.getMenuPanel().setBackground(new Color(237, 237, 237));
+                Client.Client.getClient().setUser(null);
             }
 
         }
