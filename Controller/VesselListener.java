@@ -35,7 +35,9 @@ public class VesselListener implements ActionListener, Serializable {
 
     public void actionPerformed(ActionEvent e) {
         gamestate = Client.Client.getClient().getGameState();
+        
         if (gamestate != null && gamestate.canPlay()) {
+            System.out.println("turn --------- " + gamestate.isPlayer1Turn());
             if (playTime.equals(e.getSource())) {//timer is finished
                 playerFinishMov = true;
                 playTime.stop();//stop the timer
@@ -61,8 +63,10 @@ public class VesselListener implements ActionListener, Serializable {
             if (playerFinishMov) {//player finished his moves
                 posList.clear();
                 System.out.println("player one turn " + judge.isPlayer1());
+                gamestate.disabledGame();
+                System.out.println("ddd " + gamestate.canPlay());
                 Client.Client.getClient().changeGameTurn(board);//send the board to the server
-            playerWonHandler(judge.isGameEnd());//check if the game is finished
+                playerWonHandler(judge.isGameEnd());//check if the game is finished
                 playerFinishMov = false;
             }
         }
@@ -191,12 +195,6 @@ public class VesselListener implements ActionListener, Serializable {
             }
             try {
                 Client.Client.getClient().getRemoteServer().gameFinishReg(e, gamestate);
-            } catch (RemoteException ex) {
-                Logger.getLogger(VesselListener.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-            try {
-                Client.Client.getClient().getRemoteServer().gameFinishReg(e,gamestate);
             } catch (RemoteException ex) {
                 Logger.getLogger(VesselListener.class.getName()).log(Level.SEVERE, null, ex);
             }

@@ -137,7 +137,20 @@ public class CheckersServer {
     }
 
     public void changeGameTurn(GameState gameState) {
-        sendGameState(gameState, true);
+        sendGameToUsers(gameState);
+    }
+    /*refresh the gameState during the game*/
+    private void sendGameToUsers(GameState gameState){
+        /*update the users*/
+        IRemoteClient client1 = (IRemoteClient) onlineClients.get(gameState.getUserId1());
+        IRemoteClient client2 = (IRemoteClient) onlineClients.get(gameState.getUserId2());
+        try {//upadate the users gamestate
+            gameState.enablePlaying();
+            gameState.changeTurn();
+            client1.sendGameState(gameState);
+            client2.sendGameState(gameState);
+        } catch (RemoteException e) {
+        }
     }
 
     public void StartGame(GameState gameState) {
