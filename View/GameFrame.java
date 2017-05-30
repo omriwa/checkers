@@ -9,6 +9,7 @@ import Controller.Judge;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.Serializable;
+import java.util.ArrayList;
 import javax.swing.JFrame;
 
 /**
@@ -55,7 +56,14 @@ public class GameFrame extends JFrame implements Serializable{
     
     public static void main(String [] args){
         GameFrame f = new GameFrame();
-       
+        f.getMainPanel().setGamePanel();
+        ArrayList<String> arr = new ArrayList<String>();
+        arr.add("omri");
+        arr.add("vit");
+        OnlineUsersPanel.getOnlineUsersPanel().setOnlineUsers(arr);
+        GamePanel.getGamePlayPanel().invalidate();
+        GamePanel.getGamePlayPanel().validate();
+
     }
     
 }

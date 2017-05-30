@@ -1,8 +1,10 @@
 package Model;
 
+import java.io.Serializable;
 
 
-public abstract class PlayerWonEvent extends MyEvent {
+
+public abstract class PlayerWonEvent extends MyEvent implements Serializable{
 
 	public PlayerWonEvent(Object source) {
 		super(source);

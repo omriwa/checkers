@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import javax.swing.Timer;
 import Model.GameState;
 import Model.P1WonEvent;
-import View.GameFrame;
-import java.awt.Frame;
-import javax.swing.JOptionPane;
+import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class VesselListener implements ActionListener, Serializable {
 
@@ -61,13 +61,15 @@ public class VesselListener implements ActionListener, Serializable {
             if (playerFinishMov) {//player finished his moves
                 posList.clear();
                 System.out.println("player one turn " + judge.isPlayer1());
-                Client.Client.getClient().changeTurn();//change the turn of players
-                Client.Client.getClient().sendGameState(board);//send the board to the server
-                playerWonHandler(judge.isGameEnd());//check if the game is finished
-
+                Client.Client.getClient().changeGameTurn(board);//send the board to the server
+            playerWonHandler(judge.isGameEnd());//check if the game is finished
                 playerFinishMov = false;
             }
         }
+    }
+
+    public Judge getJudge() {
+        return judge;
     }
 
     private void determineMove(ActionEvent e) {
@@ -187,20 +189,23 @@ public class VesselListener implements ActionListener, Serializable {
                 msg += "two won";
                 gamestate.setWinner(gamestate.getUserId2());
             }
-            JOptionPane.showMessageDialog(new Frame(), msg);
-            writeStatistic(e);
+            try {
+                Client.Client.getClient().getRemoteServer().gameFinishReg(e, gamestate);
+            } catch (RemoteException ex) {
+                Logger.getLogger(VesselListener.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            try {
+                Client.Client.getClient().getRemoteServer().gameFinishReg(e,gamestate);
+            } catch (RemoteException ex) {
+                Logger.getLogger(VesselListener.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
         }
 
     }
     
     public void setPlayer1(boolean isPlayer1){
         player1 = isPlayer1;
-    }
-    
-    private void writeStatistic(PlayerWonEvent e){
-        if(e instanceof P1WonEvent && player1)
-            Client.Client.getClient().writeStatistics(gamestate);
-        else
-           Client.Client.getClient().writeStatistics(gamestate); 
     }
 }

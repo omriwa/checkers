@@ -5,10 +5,10 @@
  */
 package CheckerServer;
 
-import Model.User;
 import Client.IRemoteClient;
 import Model.GameInvitation;
 import Model.GameState;
+import Model.PlayerWonEvent;
 import Model.User;
 import java.rmi.RemoteException;
 import java.util.Set;
@@ -40,10 +40,6 @@ public class RemoteServer implements IRemoteServer {
         CheckersServer.getServer().changeGameTurn(gameState);
     }
 
-    public void changeTurn(GameState gameState) {
-        CheckersServer.getServer().changeGameTurn(gameState);
-    }
-
     @Override
     public void sendInvitation(GameInvitation invitation) throws RemoteException {
         CheckersServer.getServer().sendInvitation(invitation);
@@ -57,6 +53,10 @@ public class RemoteServer implements IRemoteServer {
     @Override
     public boolean closeConnection(String userId) {
         return CheckersServer.getServer().closeConnection(userId);
+    }
+    
+    public void gameFinishReg(PlayerWonEvent e , GameState g){
+        CheckersServer.getServer().finishGameHandling(e , g);
     }
 
 }

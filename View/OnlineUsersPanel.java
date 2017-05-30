@@ -29,7 +29,7 @@ public class OnlineUsersPanel extends JPanel {
     private ArrayList<String> usersName = null;
     private JScrollPane listScroller = null;
 
-    OnlineUsersPanel() {
+    private OnlineUsersPanel() {
         this.setSize(50, 400);
         this.setLayout(new BorderLayout());
         usersName = new ArrayList<>();
@@ -48,7 +48,6 @@ public class OnlineUsersPanel extends JPanel {
 
     /*get the online users from the server*/
     public void setOnlineUsers(ArrayList<String> onlineUsers) {
-        System.out.println(onlineUsers.get(0));
         usersName = onlineUsers;
         onlineUsersList = new JList(usersName.toArray());
         onlineUsersList.addListSelectionListener(new Listener());
@@ -56,9 +55,6 @@ public class OnlineUsersPanel extends JPanel {
         listScroller = new JScrollPane(onlineUsersList);
         this.add(listScroller, BorderLayout.CENTER);
         this.refreshPanel();
-        GamePanel.getGamePlayPanel().invalidate();
-        GamePanel.getGamePlayPanel().validate();
-        //fix that the new users will appear, use usersName
     }
 
     public void removeUser(User user) {
@@ -73,6 +69,9 @@ public class OnlineUsersPanel extends JPanel {
     private void refreshPanel() {
         this.invalidate();
         this.validate();
+        GamePanel.getGamePlayPanel().invalidate();
+        GamePanel.getGamePlayPanel().validate();
+
     }
 
     private class Listener implements ListSelectionListener {

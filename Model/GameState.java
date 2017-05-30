@@ -5,6 +5,8 @@
  */
 package Model;
 
+import View.GamePanel;
+import View.MyButton;
 import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -13,7 +15,7 @@ import java.util.Calendar;
 
 public class GameState implements Serializable{
     
-    private View.MyButton [][] gameVessels = null;
+    private MyButton [][] gameVessels = null;
     private boolean player1Turn = true;
     private String userID1 , userID2;
     private boolean enable = false;
@@ -24,7 +26,8 @@ public class GameState implements Serializable{
     public GameState(String u1 , String u2){
         userID1 = u1;
         userID2 = u2;
-        startTime = getCurTime();
+        gameVessels = GamePanel.getNewBoard();
+        
     }
 
     public String getOtherUser(String user){
@@ -32,6 +35,10 @@ public class GameState implements Serializable{
             return userID2;
         else
             return userID1;
+    }
+    
+    public MyButton [][] getBoard(){
+        return gameVessels;
     }
 
     public static void saveGame(String path, GameState game){
@@ -129,6 +136,10 @@ public class GameState implements Serializable{
     }
     public void disabledGame(){
         enable = false;
+    }
+    
+    public void setStartTime(){
+        startTime = getCurTime();
     }
     
     private String getCurTime(){

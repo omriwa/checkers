@@ -17,8 +17,9 @@ public class DatabaseManager {
     private Statement state = null;
     private static int gameNum = 1;
     private static String url = "jdbc:mysql://localhost:3306/checkers_database", username = "root", password = "root";
+    private static DatabaseManager databaseManager = null;
 
-    public DatabaseManager() {
+    private DatabaseManager() {
         try {
             connection = DriverManager.getConnection(url, username, password);
 
@@ -33,6 +34,12 @@ public class DatabaseManager {
         } else {
             System.out.println("Failed to make connection!");
         }
+    }
+    
+    public static DatabaseManager getDatabaseManager(){
+        if(databaseManager == null)
+           databaseManager = new DatabaseManager();
+        return databaseManager;
     }
 
     public void disconnectDatabase() {
@@ -51,7 +58,7 @@ public class DatabaseManager {
             values += "," + "'" + g.getWinner() + "'";
             values += "," + "'" + g.getStartTime() + "'";
             values += "," + "'" + g.getEndTime() + "'";
-            String query = "INSERT INTO gameshistory VALUES(" + values + ")";
+            String query = "INSERT INTO games_history VALUES(" + values + ")";
             state.executeUpdate(query);
             
         } catch (SQLException ex) {
@@ -154,7 +161,37 @@ public class DatabaseManager {
         int intColor = Integer.parseInt(c);
         return new Color(intColor);
     }
-
+//retrieve game history data from DB using query and fills up the gameHistory table
+  	public String[][] retrieveGamesHistoryData(User user){	
+  		//need to pass that 2d array to view.gameHistoryPanel
+  		String[][] gameHistoryData = null;
+  		int rows,cols = 5;  		
+        try {
+  			state = connection.createStatement();
+			
+			String sql = "SELECT * FROM games_history WHERE player1 = " + "'" + user.getUsername() + "';";
+			
+			ResultSet rs = state.executeQuery(sql);
+			//set the cursor to the last row of the table
+			rs.last();
+			rows = rs.getRow();
+			//setting the cursor before the 1st row
+			rs.beforeFirst();
+			gameHistoryData = new String[rows][cols];
+			//the loop pulls the selected rows from the DB
+			for(int i = 0 ; rs.next() ; i++)
+			{	
+				for(int j = 0 ; j < 5 ; j++)
+				{
+				   gameHistoryData[i][j] = rs.getString(j+1);
+				}	
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        return gameHistoryData;
+  	}
     public static void main(String[] argv) {
         DatabaseManager databaseManager = new DatabaseManager();
         databaseManager.disconnectDatabase();

@@ -52,4 +52,10 @@ public class RemoteClient implements IRemoteClient {
     public GameInvitation receiveGameInvitation(GameInvitation invitation){
         return Client.getClient().receiveInvitation(invitation);
     }
+
+    @Override
+    public void getUserMsg(String m) throws RemoteException {
+        Client.getClient().getGameState().disabledGame();//stop the game
+        JOptionPane.showMessageDialog(new Frame(),m);
+    }
 }

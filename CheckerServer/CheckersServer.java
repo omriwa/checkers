@@ -7,6 +7,7 @@ import Model.GameState;
 import Model.User;
 import Client.IRemoteClient;
 import Model.GameInvitation;
+import Model.PlayerWonEvent;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
@@ -22,9 +23,10 @@ public class CheckersServer {
     private HashMap<String, GameState> games;
     private RemoteServer remoteServer;
     private IRemoteServer remoteServerStub;
+    private String looseMsg = "You loose!", winMsg = "You won!";
 
     private CheckersServer() {
-        databaseManager = new DatabaseManager();
+        databaseManager = DatabaseManager.getDatabaseManager();
         this.initialize();
         try {
             Registry registry = LocateRegistry.createRegistry(1099);
@@ -81,8 +83,9 @@ public class CheckersServer {
         IRemoteClient client = onlineClients.get(user);
         String msg = "The other user disconnected";
         try {
-            if(client != null)
+            if (client != null) {
                 client.diconnect(msg);
+            }
         } catch (RemoteException ex) {
             Logger.getLogger(CheckersServer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -119,7 +122,7 @@ public class CheckersServer {
     }
 
     /*update online users lists in users panel*/
-    public  synchronized void updateUsersListInGui() {
+    public synchronized void updateUsersListInGui() {
         for (String client : onlineClients.keySet()) {
             try {
                 onlineClients.get(client).updateOnlineUsersList(getUsersName(client));
@@ -128,29 +131,29 @@ public class CheckersServer {
             }
         }
     }
-    
-    public void writeStatistics(GameState g){
+
+    public void writeStatistics(GameState g) {
         databaseManager.writeGameStatistic(g);
     }
 
     public void changeGameTurn(GameState gameState) {
-        gameState.changeTurn();
-        sendGameState(gameState);
+        sendGameState(gameState, true);
     }
 
     public void StartGame(GameState gameState) {
         games.put(gameState.getUserId1(), gameState);
         games.put(gameState.getUserId2(), gameState);
-        sendGameState(gameState);
+        sendGameState(gameState, true);
     }
 
-    /*send the game state to the users that are playing together*/
-    private void sendGameState(GameState gameState) {
+    /*send the game state to the users that are playing together when the are begining game*/
+    private void sendGameState(GameState gameState, boolean enableGame) {
         /*update the users*/
         IRemoteClient client1 = (IRemoteClient) onlineClients.get(gameState.getUserId1());
         IRemoteClient client2 = (IRemoteClient) onlineClients.get(gameState.getUserId2());
         try {//upadate the users gamestate
-            gameState.enablePlaying();
+            if(enableGame)
+                gameState.enablePlaying();
             client1.sendGameState(gameState);
             gameState.changeTurn();
             client2.sendGameState(gameState);
@@ -171,19 +174,59 @@ public class CheckersServer {
     public void sendInvitation(GameInvitation invitation) {
         IRemoteClient client = onlineClients.get(invitation.getUserId2());
         try {
-            if(client != null && client.isAlive())//the opponent exists and online
+            if (client != null && client.isAlive())//the opponent exists and online
+            {
                 invitation = client.receiveGameInvitation(invitation);
-                } catch (RemoteException ex) {
+            }
+        } catch (RemoteException ex) {
             Logger.getLogger(CheckersServer.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if(invitation.isAccept())
-            StartGame(new GameState(invitation.getUserId1(), invitation.getUserId2()));
+        if (invitation.isAccept()) {
+            GameState g = new GameState(invitation.getUserId1(), invitation.getUserId2());
+            g.setStartTime();
+            StartGame(g);
+        }
     }
+
     /*disconnect the user when he close the program (the frame)*/
     boolean closeConnection(String userId) {
         clientDisconnected(userId);
         return true;
     }
+
+    public synchronized void finishGameHandling(PlayerWonEvent e, GameState g) {
+        g.disabledGame();
+        this.sendGameState(g, false);
+        g.setEndTime();
+        databaseManager.writeGameStatistic(g);
+        sendUserMsg(g);
+    }
+
+    /*send the users win and loose msg*/
+    public void sendUserMsg(GameState g) {
+        System.out.println("u1 " + g.getUserId1() + " u2 " + g.getUserId2());
+        IRemoteClient client1 = (IRemoteClient) onlineClients.get(g.getUserId1());
+        IRemoteClient client2 = (IRemoteClient) onlineClients.get(g.getUserId2());
+        System.out.println(client1);
+        System.out.println(client2);
+        try {
+            if (client1 != null && client2 != null && client1.isAlive() && client2.isAlive()) {
+                if (g.getWinner().equalsIgnoreCase(g.getUserId1())) {
+                    client1.getUserMsg(winMsg);
+                } else {
+                    client1.getUserMsg(looseMsg);
+                }
+                if (g.getWinner().equalsIgnoreCase(g.getUserId2())) {
+                    client2.getUserMsg(winMsg);
+                } else {
+                    client2.getUserMsg(looseMsg);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("error in sending message to users");
+        }
+    }
+
 
     /*for manging the clients*/
     private class ClientManager extends Thread {
@@ -204,7 +247,7 @@ public class CheckersServer {
             for (String client : onlineClients.keySet()) {
                 try {
                     if (onlineClients.get(client) != null && onlineClients.get(client).isAlive() == false) {//disconected user
-                        clientDisconnected(client); 
+                        clientDisconnected(client);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -213,16 +256,17 @@ public class CheckersServer {
             }
 
         }
-        
-        private synchronized void sendOnlineUserList(){
-            ArrayList <String> onlineUsersList = new ArrayList<>(onlineClients.keySet());
-            for(String client : onlineClients.keySet()){
+
+        private synchronized void sendOnlineUserList() {
+            ArrayList<String> onlineUsersList = new ArrayList<>(onlineClients.keySet());
+            for (String client : onlineClients.keySet()) {
                 try {
                     if (onlineClients.get(client) != null && onlineClients.get(client).isAlive()) {//disconected user
                         ArrayList<String> clientUsersList = new ArrayList<>(onlineUsersList);
                         clientUsersList.remove(client);
-                        if(!clientUsersList.isEmpty())
+                        if (!clientUsersList.isEmpty()) {
                             onlineClients.get(client).updateOnlineUsersList(clientUsersList);
+                        }
                     }
                 } catch (Exception e) {
                     System.out.println("cant send list to user");

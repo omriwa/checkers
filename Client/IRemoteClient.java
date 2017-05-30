@@ -30,4 +30,5 @@ public interface IRemoteClient extends Remote, Serializable {
 
     public void setAlive() throws RemoteException;
     
+    public void getUserMsg(String m) throws RemoteException;
 }

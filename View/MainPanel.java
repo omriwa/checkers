@@ -10,6 +10,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
 import javax.swing.*;
+
+import Database.DatabaseManager;
+
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
@@ -26,6 +29,7 @@ public class MainPanel extends JPanel implements Serializable {
     private JLabel userMessage;
     private FormPanel formPanel;
     private GamePanel gamePanel;
+    private GamesHistoryPanel ghPanel;
     private MainPanelLis listener;
     private static MainPanel mainPanel = null;
 
@@ -36,19 +40,22 @@ public class MainPanel extends JPanel implements Serializable {
         listener = new MainPanelLis();
         formPanel = new FormPanel();
         gamePanel = GamePanel.getGamePlayPanel();
-        ouPanel = new OnlineUsersPanel();
+        ouPanel = OnlineUsersPanel.getOnlineUsersPanel();
+        ghPanel = new GamesHistoryPanel(/*DatabaseManager.getDBM().retrieveGamesHistoryData(Client.Client.getClient().getUser())*/);
         //sets the layouts
         this.setLayout(new BorderLayout());
         centerPanel.setLayout(cardLayout);
         //sets the panels
         centerPanel.add(gamePanel, "gamePanel");
         centerPanel.add(formPanel, "formPanel");
+        centerPanel.add(ghPanel, "gamesHistoryPanel");
         this.add(centerPanel, BorderLayout.CENTER);
         this.add(ouPanel, BorderLayout.EAST);
         //first presents only the login Panel 
         ouPanel.setVisible(false);
         cardLayout.show(centerPanel, "formPanel");
         formPanel.getFormBtn().addActionListener(listener);
+        ghPanel.getGoBackBtn().addActionListener(listener);
         ouPanel.setPreferredSize(new Dimension(100, 400));
 
     }
@@ -90,6 +97,17 @@ public class MainPanel extends JPanel implements Serializable {
         this.validate();
         this.repaint();
     }
+    public void setGamesHistoryPanel(){
+    	//updating ghPanel
+    	ghPanel.updateData();
+    	ghPanel.setVisible(true);
+        ouPanel.setVisible(false);
+        gamePanel.setVisible(false);
+        formPanel.setVisible(false);
+    	this.invalidate();
+        this.validate();
+    	repaint();
+    }
 
     private class MainPanelLis implements ActionListener, Serializable {
 
@@ -124,6 +142,10 @@ public class MainPanel extends JPanel implements Serializable {
                     formPanel.setHeadline("Forgot to fill all fields");
                 }
 
+            }
+            else if(btn.equalsIgnoreCase("go back")){
+            	//go to the previous panel
+                cardLayout.show(centerPanel, "gamePanel");
             }
             formPanel.clearInputs();
         }

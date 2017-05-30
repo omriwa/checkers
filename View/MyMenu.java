@@ -23,7 +23,7 @@ import java.awt.Color;
 public class MyMenu extends JMenuBar implements Serializable {
 
     private IRemoteServer manager = null;
-    private JMenuItem logItem, surrenderItem, loginItem, registerItem, disconnectItem;
+    private JMenuItem logItem, surrenderItem, loginItem, registerItem, disconnectItem , gamesHistoryItem;
     private Listener listener;
     private static MyMenu myMenu = null;
 
@@ -39,16 +39,19 @@ public class MyMenu extends JMenuBar implements Serializable {
         registerItem = new JMenuItem("Register");
         loginItem = new JMenuItem("Login");
         disconnectItem = new JMenuItem("Disconnect");
+        gamesHistoryItem  = new JMenuItem("Games history");
         menu.add(logItem);
         menu.add(surrenderItem);
         menu.add(loginItem);
         menu.add(registerItem);
         menu.add(disconnectItem);
+        menu.add(gamesHistoryItem);
         disconnectItem.addActionListener(listener);
         logItem.addActionListener(listener);
         surrenderItem.addActionListener(listener);
         loginItem.addActionListener(listener);
         registerItem.addActionListener(listener);
+        gamesHistoryItem.addActionListener(listener);
         intialOptions();
         this.setBackground(new Color(237, 237, 237));
     }
@@ -94,6 +97,10 @@ public class MyMenu extends JMenuBar implements Serializable {
                 MyMenu.getMenuPanel().setBackground(new Color(237, 237, 237));
                 Client.Client.getClient().setUser(null);
             }
+            else if(e.getSource().equals(gamesHistoryItem)){
+            	mainPanel.setGamesHistoryPanel();
+                MyMenu.getMenuPanel().enableInputItems();
+            }
 
         }
 
@@ -105,6 +112,7 @@ public class MyMenu extends JMenuBar implements Serializable {
         disconnectItem.setEnabled(false);
         logItem.setEnabled(false);
         surrenderItem.setEnabled(false);
+        gamesHistoryItem.setEnabled(false);
     }
 
     public void disableInputItems() {
@@ -113,6 +121,8 @@ public class MyMenu extends JMenuBar implements Serializable {
         surrenderItem.setEnabled(true);
         loginItem.setEnabled(false);
         disconnectItem.setEnabled(true);
+        gamesHistoryItem.setEnabled(true);
+
         this.repaint();
     }
 
@@ -122,6 +132,8 @@ public class MyMenu extends JMenuBar implements Serializable {
         surrenderItem.setEnabled(false);
         loginItem.setEnabled(true);
         disconnectItem.setEnabled(false);
+        gamesHistoryItem.setEnabled(true);
+
         this.repaint();
     }
 

@@ -4,6 +4,7 @@ import Model.User;
 import Client.IRemoteClient;
 import Model.GameInvitation;
 import Model.GameState;
+import Model.PlayerWonEvent;
 import Model.User;
 import java.io.Serializable;
 import java.rmi.Remote;
@@ -22,12 +23,12 @@ public interface IRemoteServer extends Remote, Serializable {
 
     public void changeGameTurn(GameState gameState) throws RemoteException;
 
-    public void changeTurn(GameState gameState) throws RemoteException;
-
     public void sendInvitation(GameInvitation invitation) throws RemoteException;
 
     public void writeSatistics(GameState gamestate) throws RemoteException;
 
     public boolean closeConnection(String userId) throws RemoteException;
+
+    public void gameFinishReg(PlayerWonEvent e , GameState g) throws RemoteException;
 
 }

@@ -21,6 +21,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 
@@ -140,16 +141,21 @@ public class Client implements Serializable{
     }
 
 
-    public IRemoteServer getremoteServer(){
+    public IRemoteServer getRemoteServer(){
         return remoteServer;
     }
     
     public void setGameState(GameState gameState){
         this.gameState = gameState;//need to refresh the gui
+        System.out.println("user board " + user.getUsername());
+        GamePanel.getGamePlayPanel().setUpNewBoard(gameState.getBoard());
+        GamePanel.getGamePlayPanel().getListener().getJudge().setBoard(gameState.getState());
         if(!this.gameState.isPlayer1Turn())
             GamePanel.getGamePlayPanel().getListener().setPlayer1(false);
         else
             GamePanel.getGamePlayPanel().getListener().setPlayer1(true);
+        GamePanel.getGamePlayPanel().repaint();
+
     }
     
     public GameState getGameState(){
@@ -159,19 +165,11 @@ public class Client implements Serializable{
     public void updateOnlineUserPanel(ArrayList<String> onlineUsers){
         OnlineUsersPanel.getOnlineUsersPanel().setOnlineUsers(onlineUsers);
     }
-    /*send the board game to the server*/
-    public void sendGameState(MyButton [][] board){
+    /*send the board game to the server and change the game turn*/
+    public void changeGameTurn(MyButton [][] board){
         gameState.setState(board);
         try {
             remoteServer.changeGameTurn(gameState);
-        } catch (RemoteException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    public void changeTurn(){
-        gameState.changeTurn();
-        try {
-            remoteServer.changeTurn(gameState);
         } catch (RemoteException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }

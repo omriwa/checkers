@@ -9,7 +9,6 @@ import Controller.VesselListener;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
-import java.lang.reflect.Field;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -25,7 +24,6 @@ public class GamePanel extends JPanel {
     private MyButton[][] board;//matrix of buttons
     private static GamePanel gamePanel = null;
     private final int ROW = 10, COL = 10;
-    private Color userColor = Color.BLACK;//black is default color - the user may set preferred color
 
     private GamePanel() {
 
@@ -41,7 +39,6 @@ public class GamePanel extends JPanel {
         buttonSetUp();
         vesselSetUp(0, 4, true);//player1 set up vessels
         vesselSetUp(6, 10, false);//player1 set up vessels
-
         this.add(buttonsComponent, BorderLayout.CENTER);
 
     }
@@ -65,7 +62,7 @@ public class GamePanel extends JPanel {
                 if ((i + j) % 2 == 0) {
                     board[i][j].setBackground(Color.white);
                 } else {
-                    board[i][j].setBackground(userColor);
+                    board[i][j].setBackground(Color.black);
                 }
             }
 
@@ -81,6 +78,8 @@ public class GamePanel extends JPanel {
                 } else {
                     board[i][j].setVessel(null);
                 }
+                board[i][j].addActionListener(listener);
+                board[i][j].repaint();
             }
         }
         this.repaint();
@@ -95,6 +94,11 @@ public class GamePanel extends JPanel {
                 }
             }
         }
+    }
+    
+    public static MyButton [][] getNewBoard(){
+        GamePanel gamePanel = new GamePanel();
+        return gamePanel.getBoard();
     }
 
     public MyButton[][] getBoard() {
