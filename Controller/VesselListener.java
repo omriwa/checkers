@@ -36,6 +36,7 @@ public class VesselListener implements ActionListener, Serializable {
     public void actionPerformed(ActionEvent e) {
         gamestate = Client.Client.getClient().getGameState();
         
+        
         if (gamestate != null && gamestate.canPlay()) {
             System.out.println("turn --------- " + gamestate.isPlayer1Turn());
             if (playTime.equals(e.getSource())) {//timer is finished
@@ -45,13 +46,15 @@ public class VesselListener implements ActionListener, Serializable {
                 try {
 
                     Vessel vessel = ((MyButton) e.getSource()).getVessel();
-                    if (gamestate.isPlayer1Turn() && judge.isPlayer1()) {//first player turn
+                    if (gamestate.isPlayer1Turn() && player1) {//first player turn
                         if (vessel == null || vessel.isPlayer1Vessel()) {
+                            System.out.println("first player move");
                             this.determineMove(e);
                         }
                     }
-                    if (!gamestate.isPlayer1Turn() && !judge.isPlayer1()) {//second player turn
+                    if (!gamestate.isPlayer1Turn() && !player1) {//second player turn
                         if (vessel == null || !vessel.isPlayer1Vessel()) {
+                            System.out.println("sec player move");
                             this.determineMove(e);
                         }
                     }
@@ -62,7 +65,7 @@ public class VesselListener implements ActionListener, Serializable {
 
             if (playerFinishMov) {//player finished his moves
                 posList.clear();
-                System.out.println("player one turn " + judge.isPlayer1());
+                System.out.println("player one turn " + gamestate.isPlayer1Turn());
                 gamestate.disabledGame();
                 System.out.println("ddd " + gamestate.canPlay());
                 Client.Client.getClient().changeGameTurn(board);//send the board to the server
@@ -109,7 +112,7 @@ public class VesselListener implements ActionListener, Serializable {
     }
 
     private boolean simpleMove(Vessel vessel) {
-        if (!playTime.isRunning() && from.isLegalMove(curr, judge.isPlayer1(), vessel.isQueen(), board))//player just move without eating
+        if (!playTime.isRunning() && from.isLegalMove(curr, player1, vessel.isQueen(), board))//player just move without eating
         {//move
             move(from, to);
             posList.clear();
@@ -167,12 +170,12 @@ public class VesselListener implements ActionListener, Serializable {
     /*check if the player's vessel deserve a queen*/
     private void deserveQueen(Position to) {
         Vessel vessel = board[to.getI()][to.getJ()].getVessel();
-        if (!vessel.isPlayer1Vessel() && !judge.isPlayer1()) {//vessel of player 1 and he is playing
+        if (!vessel.isPlayer1Vessel() && !player1) {//vessel of player 1 and he is playing
             if (to.getI() == 0) {
                 vessel.setQueen();
             }
         }
-        if (vessel.isPlayer1Vessel() && judge.isPlayer1()) {//vessel of player 2 and he is playing
+        if (vessel.isPlayer1Vessel() && player1) {//vessel of player 2 and he is playing
             if (to.getI() == board.length - 1) {
                 vessel.setQueen();
             }

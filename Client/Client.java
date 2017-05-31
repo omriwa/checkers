@@ -150,10 +150,10 @@ public class Client implements Serializable{
         System.out.println("user board " + user.getUsername());
         GamePanel.getGamePlayPanel().setUpNewBoard(gameState.getBoard());
         GamePanel.getGamePlayPanel().getListener().getJudge().setBoard(gameState.getState());
-        if(!this.gameState.isPlayer1Turn())
-            GamePanel.getGamePlayPanel().getListener().setPlayer1(false);
-        else
+        if(user.getUsername().equalsIgnoreCase(gameState.getUserId1()))
             GamePanel.getGamePlayPanel().getListener().setPlayer1(true);
+        else
+            GamePanel.getGamePlayPanel().getListener().setPlayer1(false);
         GamePanel.getGamePlayPanel().repaint();
 
     }

@@ -137,38 +137,34 @@ public class CheckersServer {
     }
 
     public void changeGameTurn(GameState gameState) {
-        sendGameToUsers(gameState);
-    }
-    /*refresh the gameState during the game*/
-    private void sendGameToUsers(GameState gameState){
-        /*update the users*/
-        IRemoteClient client1 = (IRemoteClient) onlineClients.get(gameState.getUserId1());
-        IRemoteClient client2 = (IRemoteClient) onlineClients.get(gameState.getUserId2());
-        try {//upadate the users gamestate
-            gameState.enablePlaying();
-            gameState.changeTurn();
-            client1.sendGameState(gameState);
-            client2.sendGameState(gameState);
-        } catch (RemoteException e) {
-        }
+        sendGameState(gameState, true, true);
     }
 
     public void StartGame(GameState gameState) {
         games.put(gameState.getUserId1(), gameState);
         games.put(gameState.getUserId2(), gameState);
-        sendGameState(gameState, true);
+        sendGameState(gameState, true, false);
     }
 
-    /*send the game state to the users that are playing together when the are begining game*/
-    private void sendGameState(GameState gameState, boolean enableGame) {
+    /*send the game state to the users that are playing together when the are begining game
+    or for during the game, if enableGame is true and changeTurn is false, its the start of the game
+    if enable  is during the game*/
+    private void sendGameState(GameState gameState, boolean enableGame, boolean changeTurn) {
         /*update the users*/
         IRemoteClient client1 = (IRemoteClient) onlineClients.get(gameState.getUserId1());
         IRemoteClient client2 = (IRemoteClient) onlineClients.get(gameState.getUserId2());
         try {//upadate the users gamestate
-            if(enableGame)
+            if (enableGame) {
                 gameState.enablePlaying();
+            }
+            if (changeTurn) {
+                gameState.changeTurn();
+            }
             client1.sendGameState(gameState);
-            gameState.changeTurn();
+            if (!changeTurn)//if its the start of the game
+            {
+                gameState.changeTurn();
+            }
             client2.sendGameState(gameState);
         } catch (RemoteException e) {
         }
@@ -209,7 +205,7 @@ public class CheckersServer {
 
     public synchronized void finishGameHandling(PlayerWonEvent e, GameState g) {
         g.disabledGame();
-        this.sendGameState(g, false);
+        this.sendGameState(g, false, false);
         g.setEndTime();
         databaseManager.writeGameStatistic(g);
         sendUserMsg(g);
@@ -277,9 +273,9 @@ public class CheckersServer {
                     if (onlineClients.get(client) != null && onlineClients.get(client).isAlive()) {//disconected user
                         ArrayList<String> clientUsersList = new ArrayList<>(onlineUsersList);
                         clientUsersList.remove(client);
-                        if (!clientUsersList.isEmpty()) {
-                            onlineClients.get(client).updateOnlineUsersList(clientUsersList);
-                        }
+
+                        onlineClients.get(client).updateOnlineUsersList(clientUsersList);
+
                     }
                 } catch (Exception e) {
                     System.out.println("cant send list to user");

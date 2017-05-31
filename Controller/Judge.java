@@ -72,7 +72,7 @@ public class Judge extends Component implements Serializable {
 
     }
 
-    //need to fix it
+
     /*return the players turn*/
     public boolean isPlayer1() {
         return player1Turn;
