@@ -70,21 +70,20 @@ public class GamePanel extends JPanel {
     }
 
     /*set up the board from a new board*/
-    public void setUpNewBoard(MyButton board[][]) {
+    public void setUpNewBoard(MyButton b[][]) {
         for (int i = 0; i < ROW; i++) {
             for (int j = 0; j < COL; j++) {
-                if (board[i][j].thereIsVessel()) {//move the vessel to this.board
-                    board[i][j].setVessel(board[i][j].getVessel());
+                if (b[i][j].thereIsVessel()) {//move the vessel to this.board
+                    board[i][j].setVessel(b[i][j].getVessel());
                 } else {
                     board[i][j].setVessel(null);
                 }
-                board[i][j].addActionListener(listener);
-                board[i][j].repaint();
             }
         }
         System.out.println("got new board");
         this.invalidate();
         this.validate();
+        this.repaint();
     }
 
     /*connect the vessel to buttons*/
