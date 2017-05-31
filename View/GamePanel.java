@@ -82,7 +82,9 @@ public class GamePanel extends JPanel {
                 board[i][j].repaint();
             }
         }
-        this.repaint();
+        System.out.println("got new board");
+        this.invalidate();
+        this.validate();
     }
 
     /*connect the vessel to buttons*/

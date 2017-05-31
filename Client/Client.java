@@ -154,8 +154,6 @@ public class Client implements Serializable{
             GamePanel.getGamePlayPanel().getListener().setPlayer1(true);
         else
             GamePanel.getGamePlayPanel().getListener().setPlayer1(false);
-        GamePanel.getGamePlayPanel().repaint();
-
     }
     
     public GameState getGameState(){

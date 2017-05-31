@@ -31,7 +31,7 @@ public class GameState implements Serializable{
     }
 
     public String getOtherUser(String user){
-        if (user == userID1)
+        if (user.equalsIgnoreCase(userID1))
             return userID2;
         else
             return userID1;
