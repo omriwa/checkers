@@ -41,7 +41,7 @@ public class MyMenu extends JMenuBar implements Serializable {
         disconnectItem = new JMenuItem("Disconnect");
         gamesHistoryItem  = new JMenuItem("Games history");
         menu.add(logItem);
-        menu.add(surrenderItem);
+//        menu.add(surrenderItem);
         menu.add(loginItem);
         menu.add(registerItem);
         menu.add(disconnectItem);
