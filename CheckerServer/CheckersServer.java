@@ -46,7 +46,7 @@ public class CheckersServer {
         return server;
     }
 
-    public User connect(String username, String password, IRemoteClient b) {
+    public synchronized User connect(String username, String password, IRemoteClient b) {
         User user;
         if ((user = databaseManager.getUserFromDB(username, password)) != null) {
             if (!onlineClients.containsKey(user.getUsername())) {//user isnt exists
@@ -75,7 +75,7 @@ public class CheckersServer {
     }
 
     /*writing statistic of game to the db and announce the other player*/
-    public void processGameStoped(String user) {
+    public synchronized void processGameStoped(String user) {
         GameState game = games.get(user);
         game.setWinner(user);
         game.setEndTime();//set finish time of the game
@@ -92,7 +92,7 @@ public class CheckersServer {
         games.remove(user);
     }
 
-    public User register(User userInfo, String pass, IRemoteClient b) {
+    public synchronized User register(User userInfo, String pass, IRemoteClient b) {
         if (databaseManager.registerUser(userInfo, pass)) {
             return userInfo;
         }
@@ -240,6 +240,8 @@ public class CheckersServer {
     /*for manging the clients*/
     private class ClientManager extends Thread {
 
+        private ArrayList<String> onlineUsersList = new ArrayList<>(onlineClients.keySet());
+
         @Override
         public void run() {
             while (true) {
@@ -267,20 +269,44 @@ public class CheckersServer {
         }
 
         private synchronized void sendOnlineUserList() {
-            ArrayList<String> onlineUsersList = new ArrayList<>(onlineClients.keySet());
-            for (String client : onlineClients.keySet()) {
-                try {
-                    if (onlineClients.get(client) != null && onlineClients.get(client).isAlive()) {//disconected user
-                        ArrayList<String> clientUsersList = new ArrayList<>(onlineUsersList);
-                        clientUsersList.remove(client);
 
-                        onlineClients.get(client).updateOnlineUsersList(clientUsersList);
+            if (isOnlineUserListChange()) {
+                System.out.println("changed");
+                for (String client : onlineClients.keySet()) {
+                    try {
+                        if (onlineClients.get(client) != null && onlineClients.get(client).isAlive()) {//disconected user
+                            ArrayList<String> clientUsersList = new ArrayList<>(onlineUsersList);
+                            clientUsersList.remove(client);
 
+                            onlineClients.get(client).updateOnlineUsersList(clientUsersList);
+
+                        }
+                    } catch (Exception e) {
+                        System.out.println("cant send list to user");
                     }
-                } catch (Exception e) {
-                    System.out.println("cant send list to user");
                 }
             }
+        }
+
+        private boolean isOnlineUserListChange() {
+            ArrayList<String> curOnlineUsersList = new ArrayList<>(onlineClients.keySet());
+            if (curOnlineUsersList.isEmpty()) {
+                onlineUsersList = curOnlineUsersList;
+                return false;
+            }
+            else if(curOnlineUsersList.size() != onlineUsersList.size()){
+                onlineUsersList = curOnlineUsersList;
+                return true;
+            }
+            else {
+                for (int i = 0; i < curOnlineUsersList.size(); i++) {
+                    if (!onlineUsersList.get(i).equals(curOnlineUsersList.get(i))) {
+                        onlineUsersList = curOnlineUsersList;
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
     }
 }
