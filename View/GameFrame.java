@@ -21,17 +21,22 @@ public class GameFrame extends JFrame implements Serializable{
     private MainPanel mainPanel; 
     private static GameFrame gameFrame = null;
     private Judge judge;
+    private WindowListener listener = null;
     
     private GameFrame() {
         mainPanel = MainPanel.getMainPanel();
-        
+        listener = new WindowListener();
         //setup
         this.setSize(450, 400);
         this.add(mainPanel);
         this.setJMenuBar(MyMenu.getMenuPanel(this));
         this.setVisible(true);
         this.setResizable(false);
-        this.addWindowListener(new Listener());
+        this.addWindowListener(listener);
+    }
+
+    public void closeFrame(){
+        System.exit(0);
     }
     
     public static GameFrame getGameFrame(){
@@ -45,11 +50,14 @@ public class GameFrame extends JFrame implements Serializable{
         return mainPanel;
     }
     
-    private class Listener extends WindowAdapter {
+    private class WindowListener extends WindowAdapter {
+        
+            @Override
             public void windowClosing(WindowEvent e)
             {
-                if(Client.Client.getClient().onClose())
-                    GameFrame.getGameFrame().setDefaultCloseOperation(GameFrame.EXIT_ON_CLOSE);
+                if(Client.Client.getClient().onClose()){
+                        closeFrame();
+                }
             }
     }
   

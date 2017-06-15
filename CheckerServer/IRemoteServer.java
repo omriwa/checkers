@@ -31,4 +31,6 @@ public interface IRemoteServer extends Remote, Serializable {
 
     public void gameFinishReg(PlayerWonEvent e , GameState g) throws RemoteException;
 
+    public String[][] getUserHistory(User user) throws RemoteException;
+
 }

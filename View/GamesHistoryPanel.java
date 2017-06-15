@@ -23,14 +23,20 @@ public class GamesHistoryPanel extends JPanel implements Serializable{
             "winner",
             "start time",
             "finish time"};
+	private static GamesHistoryPanel gamesHistoryPanel = null;
 	
-	
-	public GamesHistoryPanel(){
+	private GamesHistoryPanel(){
 		this.setLayout(new BorderLayout());
 		goBackBtn = new JButton("go back");
 		setLayout(new BorderLayout());
 		this.add(goBackBtn,BorderLayout.SOUTH);
 	}
+        
+        public static GamesHistoryPanel getGameHistoryPanel(){
+            if(gamesHistoryPanel == null)
+                gamesHistoryPanel = new GamesHistoryPanel();
+            return gamesHistoryPanel;
+        }
 	
 	public JButton getGoBackBtn(){
 		return goBackBtn;
@@ -43,5 +49,9 @@ public class GamesHistoryPanel extends JPanel implements Serializable{
 		this.add(scrollPane,BorderLayout.CENTER);		
 	}
 	
+        public void setData(String [][] data){
+            this.data = data;
+        }
+        
 
 }

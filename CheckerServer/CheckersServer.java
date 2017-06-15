@@ -236,6 +236,10 @@ public class CheckersServer {
         }
     }
 
+    public String[][] getUserHistory(User u) {
+        return databaseManager.retrieveGamesHistoryData(u);
+    }
+
 
     /*for manging the clients*/
     private class ClientManager extends Thread {

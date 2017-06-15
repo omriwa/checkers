@@ -14,7 +14,7 @@ import CheckerServer.IRemoteServer;
 import Database.UserConfiguration;
 import Model.GameInvitation;
 import View.*;
-
+import java.awt.event.WindowEvent;
 
 import java.io.Serializable;
 import java.rmi.server.UnicastRemoteObject;
@@ -24,79 +24,74 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-
-public class Client implements Serializable{
+public class Client implements Serializable {
 
     private User user;
     private IRemoteClient remoteClient;
     private GameState gameState;
     private IRemoteServer remoteServer;
     private static Client client = null;
-    
-    private Client(){
+
+    private Client() {
         remoteClient = new RemoteClient();
     }
-    
-    public static Client getClient(String host , String objName){
-        if(client == null){
+
+    public static Client getClient(String host, String objName) {
+        if (client == null) {
             client = new Client();
             client.intialize(host, objName);
         }
         return client;
     }
-    
-    public static Client getClient(){
+
+    public static Client getClient() {
         return client;
     }
-    
-    public User getUser(){
+
+    public User getUser() {
         return user;
     }
-    
-    public void setConnectionAlive(){
+
+    public void setConnectionAlive() {
         try {
             remoteClient.setAlive();
         } catch (RemoteException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            closeProgram();
         }
     }
-    
-    private void intialize(String host , String objName){
+
+    private void intialize(String host, String objName) {
         Registry registry;
         try {
-                registry = LocateRegistry.getRegistry(host);
-                remoteServer = (IRemoteServer) registry.lookup(objName);
-                remoteClient = (IRemoteClient) UnicastRemoteObject.exportObject(new RemoteClient(), 0);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        
-        System.out.println("Client intialzed");  
-    }
-    
-    private void initializeUser(){
+            registry = LocateRegistry.getRegistry(host);
+            remoteServer = (IRemoteServer) registry.lookup(objName);
+            remoteClient = (IRemoteClient) UnicastRemoteObject.exportObject(new RemoteClient(), 0);
+        } catch (Exception e) {
+            closeProgram();
+        }
 
+        System.out.println("Client intialzed");
     }
 
-    public boolean onRegister(User user , String pass){
+    public boolean onRegister(User user, String pass) {
         try {
-            user =  remoteServer.registerInServer(user , pass , remoteClient);
-            if (user!=null) {
+            user = remoteServer.registerInServer(user, pass, remoteClient);
+            if (user != null) {
                 UserConfiguration.saveUserConfig(user);
                 return true;
-            }
-            else
+            } else {
                 return false;
+            }
         } catch (RemoteException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            closeProgram();
         }
         return false;
     }
-    
-    public boolean onLogOn(String username, String pass){
+
+    public boolean onLogOn(String username, String pass) {
         try {
-            user = remoteServer.connectToServer(username, pass , remoteClient);
-            if (user  != null){
+            user = remoteServer.connectToServer(username, pass, remoteClient);
+            if (user != null) {
                 UserConfiguration.loadUserConfig(user);
                 MyMenu.getMenuPanel().setBackground(user.getColor());
                 return true;
@@ -104,26 +99,27 @@ public class Client implements Serializable{
                 //dialog doesn't exist
                 return false;
             }
-                
-                //create user by gui
-                //else
-                //load user
-                // RemoteClient callback = new
-                // send the user and the callback to the server
-                }
-        catch (RemoteException ex) {
-            ex.printStackTrace();
+
+            //create user by gui
+            //else
+            //load user
+            // RemoteClient callback = new
+            // send the user and the callback to the server
+        } catch (RemoteException ex) {
+            closeProgram();
         }
         return false;
     }
-    
-    public boolean onClose(){
-        if(user == null)//if the user didnt sign in
+
+    public boolean onClose() {
+        if (user == null)//if the user didnt sign in
+        {
             return true;
+        }
         try {
             return remoteServer.closeConnection(user.getUsername());
         } catch (RemoteException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            closeProgram();
         }
         return false;
     }
@@ -131,62 +127,81 @@ public class Client implements Serializable{
     public void setUser(User user) {
         this.user = user;
     }
-    
-    public void onDisconnect(){
+
+    public void onDisconnect() {
         try {
             remoteClient.disconnect();
+            user = null;
         } catch (RemoteException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            closeProgram();
         }
     }
 
+    public void onGameHistory() {
+        try {
+            //check if user is connected
+            if (user != null) {
+                //retrive the data from db
+                String [][] data = remoteServer.getUserHistory(user);
+                //set the data in gui
+                GamesHistoryPanel.getGameHistoryPanel().setData(data);
+            }
+        }
+        catch(RemoteException e){
+            closeProgram();
+        }
+    }
 
-    public IRemoteServer getRemoteServer(){
+    public IRemoteServer getRemoteServer() {
         return remoteServer;
     }
-    
-    public void setGameState(GameState gameState){
+
+    public void setGameState(GameState gameState) {
         this.gameState = gameState;//need to refresh the gui
         System.out.println("user board " + user.getUsername());
         GamePanel.getGamePlayPanel().setUpNewBoard(gameState.getBoard());
         GamePanel.getGamePlayPanel().getListener().getJudge().setBoard(gameState.getState());
-        if(user.getUsername().equalsIgnoreCase(gameState.getUserId1()))
+        if (user.getUsername().equalsIgnoreCase(gameState.getUserId1())) {
             GamePanel.getGamePlayPanel().getListener().setPlayer1(true);
-        else
+        } else {
             GamePanel.getGamePlayPanel().getListener().setPlayer1(false);
+        }
     }
-    
-    public GameState getGameState(){
+
+    public GameState getGameState() {
         return gameState;
     }
+
     /*update the lists of online user in panel*/
-    public void updateOnlineUserPanel(ArrayList<String> onlineUsers){
+    public void updateOnlineUserPanel(ArrayList<String> onlineUsers) {
         OnlineUsersPanel.getOnlineUsersPanel().setOnlineUsers(onlineUsers);
     }
+
     /*send the board game to the server and change the game turn*/
-    public void changeGameTurn(MyButton [][] board){
+    public void changeGameTurn(MyButton[][] board) {
         gameState.setState(board);
         try {
             remoteServer.changeGameTurn(gameState);
         } catch (RemoteException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            closeProgram();
         }
     }
 
-    public void sendInvitation(String opponentId){
+    public void sendInvitation(String opponentId) {
         GameInvitation invitation = new GameInvitation(user.getUsername(), opponentId);
         try {
             remoteServer.sendInvitation(invitation);
         } catch (RemoteException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            closeProgram();
         }
     }
-    
-    public GameInvitation receiveInvitation(GameInvitation invitation){
+
+    public GameInvitation receiveInvitation(GameInvitation invitation) {
         int dialogButton = JOptionPane.YES_NO_OPTION;
-        JOptionPane.showConfirmDialog (null, "Would you like to play with " + invitation.getUserId1(),"Info",dialogButton);
-        if(dialogButton == JOptionPane.YES_OPTION)
+        JOptionPane.showConfirmDialog(null, "Would you like to play with " + invitation.getUserId1(), "Info", dialogButton);
+        if (dialogButton == JOptionPane.YES_OPTION) {
             invitation.setAccept(true);
+        }
         return invitation;
     }
 
@@ -194,8 +209,19 @@ public class Client implements Serializable{
         try {
             remoteServer.writeSatistics(gamestate);
         } catch (RemoteException ex) {
+            closeProgram();
+        }
+    }
+
+    public void closeProgram() {
+        user = null;
+        JOptionPane.showMessageDialog(new JFrame(), "The server is down, exiting the program");
+        GameFrame.getGameFrame().closeFrame();
+        try {
+            this.finalize();
+        } catch (Throwable ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-  
+
 }

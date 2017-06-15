@@ -12,6 +12,8 @@ import Model.PlayerWonEvent;
 import Model.User;
 import java.rmi.RemoteException;
 import java.util.Set;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 public class RemoteServer implements IRemoteServer {
 
@@ -54,9 +56,12 @@ public class RemoteServer implements IRemoteServer {
     public boolean closeConnection(String userId) {
         return CheckersServer.getServer().closeConnection(userId);
     }
-    
-    public void gameFinishReg(PlayerWonEvent e , GameState g){
-        CheckersServer.getServer().finishGameHandling(e , g);
+
+    public void gameFinishReg(PlayerWonEvent e, GameState g) {
+        CheckersServer.getServer().finishGameHandling(e, g);
     }
 
+    public String [][] getUserHistory(User u){
+        return CheckersServer.getServer().getUserHistory(u);
+    }
 }

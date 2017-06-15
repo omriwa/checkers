@@ -15,9 +15,9 @@ import View.GameFrame;
 public class Main {
       public static void main(String [] args){
         try{
-            Client client = Client.getClient("localhost" , "gameManager");
+            
             GameFrame gameFrame = GameFrame.getGameFrame();
-            while(true){}
+            Client client = Client.getClient("localhost" , "gameManager");
         }
         catch(Exception e){
             e.printStackTrace();

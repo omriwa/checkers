@@ -41,7 +41,7 @@ public class MainPanel extends JPanel implements Serializable {
         formPanel = new FormPanel();
         gamePanel = GamePanel.getGamePlayPanel();
         ouPanel = OnlineUsersPanel.getOnlineUsersPanel();
-        ghPanel = new GamesHistoryPanel(/*DatabaseManager.getDBM().retrieveGamesHistoryData(Client.Client.getClient().getUser())*/);
+        ghPanel = GamesHistoryPanel.getGameHistoryPanel();
         //sets the layouts
         this.setLayout(new BorderLayout());
         centerPanel.setLayout(cardLayout);

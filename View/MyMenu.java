@@ -34,7 +34,7 @@ public class MyMenu extends JMenuBar implements Serializable {
         menu.getAccessibleContext().setAccessibleDescription(
                 "The only menu in this program that has menu items");
         this.add(menu);
-        logItem = new JMenuItem("Get the log of the games");
+        //logItem = new JMenuItem("Get the log of the games");
         surrenderItem = new JMenuItem("Surrender");
         registerItem = new JMenuItem("Register");
         loginItem = new JMenuItem("Login");
