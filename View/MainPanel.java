@@ -146,6 +146,8 @@ public class MainPanel extends JPanel implements Serializable {
             else if(btn.equalsIgnoreCase("go back")){
             	//go to the previous panel
                 cardLayout.show(centerPanel, "gamePanel");
+                ouPanel.setVisible(true);
+                MyMenu.getMenuPanel().disableInputItems();
             }
             formPanel.clearInputs();
         }

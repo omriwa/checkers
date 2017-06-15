@@ -40,7 +40,8 @@ public class MyMenu extends JMenuBar implements Serializable {
         loginItem = new JMenuItem("Login");
         disconnectItem = new JMenuItem("Disconnect");
         gamesHistoryItem  = new JMenuItem("Games history");
-        menu.add(logItem);
+        logItem = new JMenu();
+//        menu.add(logItem);
 //        menu.add(surrenderItem);
         menu.add(loginItem);
         menu.add(registerItem);
@@ -99,7 +100,7 @@ public class MyMenu extends JMenuBar implements Serializable {
             }
             else if(e.getSource().equals(gamesHistoryItem)){
             	mainPanel.setGamesHistoryPanel();
-                MyMenu.getMenuPanel().enableInputItems();
+                MyMenu.getMenuPanel().disableInputItems();
             }
 
         }

@@ -10,16 +10,14 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-/**
- *
- * @author omri
- */
 public class GamePanel extends JPanel {
 
     private JPanel buttonsComponent;
-    ;
+    private JLabel userTurnLbl;
+    private String userTurnStr;
     private VesselListener listener;
     private MyButton[][] board;//matrix of buttons
     private static GamePanel gamePanel = null;
@@ -32,10 +30,10 @@ public class GamePanel extends JPanel {
         buttonsComponent.setLayout(new GridLayout(10, 10));
         board = new MyButton[ROW][COL];
         listener = new VesselListener(board);
-
+        userTurnLbl = new JLabel("");//check if the panel updates each turn
         //setup
         this.setLayout(new BorderLayout());
-        this.add(buttonsComponent, BorderLayout.CENTER);
+        this.add(userTurnLbl, BorderLayout.NORTH);
         buttonSetUp();
         vesselSetUp(0, 4, true);//player1 set up vessels
         vesselSetUp(6, 10, false);//player1 set up vessels
@@ -48,6 +46,27 @@ public class GamePanel extends JPanel {
             gamePanel = new GamePanel();
         }
         return gamePanel;
+    }
+
+    //returns the name/userID of the current player's turn
+    public void setUsersTurnName(boolean player1Turn) {
+//        if (player1Turn && listener.getPlayer1Flag())//p1 and c2
+//        {
+//            userTurnLbl.setText(Client.Client.getClient().getGameState().getUserId1() + "'s turn");
+//        }
+//        if (!player1Turn && !listener.getPlayer1Flag())//p2 and c2
+//        {
+//            userTurnLbl.setText(Client.Client.getClient().getGameState().getUserId2() + "'s turn");
+//        }
+//        if (!player1Turn && listener.getPlayer1Flag())//p2 and c1
+//        {
+//            userTurnLbl.setText(Client.Client.getClient().getGameState().getUserId2() + "'s turn");
+//        }
+//        if (player1Turn && !listener.getPlayer1Flag())//p1 and c2
+//        {
+//            userTurnLbl.setText(Client.Client.getClient().getGameState().getUserId1() + "'s turn");
+//        }
+
     }
 
     /*board set up as black and white squares*/
@@ -96,8 +115,8 @@ public class GamePanel extends JPanel {
             }
         }
     }
-    
-    public static MyButton [][] getNewBoard(){
+
+    public static MyButton[][] getNewBoard() {
         GamePanel gamePanel = new GamePanel();
         return gamePanel.getBoard();
     }
@@ -105,8 +124,8 @@ public class GamePanel extends JPanel {
     public MyButton[][] getBoard() {
         return board;
     }
-    
-    public VesselListener getListener(){
+
+    public VesselListener getListener() {
         return listener;
     }
 

@@ -75,6 +75,9 @@ public class VesselListener implements ActionListener, Serializable {
         }
     }
 
+    public GameState getGameState(){
+    	return gamestate;
+    }
     public Judge getJudge() {
         return judge;
     }
@@ -208,5 +211,9 @@ public class VesselListener implements ActionListener, Serializable {
     
     public void setPlayer1(boolean isPlayer1){
         player1 = isPlayer1;
+    }
+    
+    public boolean getPlayer1Flag(){
+        return player1;
     }
 }

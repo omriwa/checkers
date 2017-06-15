@@ -158,9 +158,9 @@ public class Client implements Serializable {
 
     public void setGameState(GameState gameState) {
         this.gameState = gameState;//need to refresh the gui
-        System.out.println("user board " + user.getUsername());
         GamePanel.getGamePlayPanel().setUpNewBoard(gameState.getBoard());
         GamePanel.getGamePlayPanel().getListener().getJudge().setBoard(gameState.getState());
+        GamePanel.getGamePlayPanel().setUsersTurnName(gameState.isPlayer1Turn());
         if (user.getUsername().equalsIgnoreCase(gameState.getUserId1())) {
             GamePanel.getGamePlayPanel().getListener().setPlayer1(true);
         } else {

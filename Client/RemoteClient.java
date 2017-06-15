@@ -19,8 +19,8 @@ public class RemoteClient implements IRemoteClient {
     @Override
     public void sendGameState(GameState gameState) throws RemoteException {
         Client.getClient().setGameState(gameState);
-                System.out.println("gameState change " + Client.getClient().getGameState().isPlayer1Turn());
-
+        System.out.println("gameState change " + Client.getClient().getGameState().isPlayer1Turn());
+                
     }
 
     @Override
